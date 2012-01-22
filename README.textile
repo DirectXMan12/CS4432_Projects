@@ -1,0 +1,13 @@
+h1. CS 4432 Group 12 Project Files
+
+h2. Members
+
+* Jeff Namias
+* Solly Ross
+* Brian Silvia
+
+h2. Organization
+
+[*SimpleDB readme can be found in README.txt*]
+
+At the start of each project, a new branch will be split off, and master will remain the current project
