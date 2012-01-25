@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derby.jar"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derby.war"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derbynet.jar"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derbyrun.jar"/>
+	<classpathentry kind="lib" path="db-derby-10.8.2.2-lib/lib/derbytools.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
