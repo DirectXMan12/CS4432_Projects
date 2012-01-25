@@ -24,7 +24,7 @@ public class Buffer {
     * Creates a new buffer, wrapping a new 
     * {@link simpledb.file.Page page}.  
     * This constructor is called exclusively by the 
-    * class {@link BasicBufferMgr}.   
+    * class {@link AbstractBasicBufferMgr}.   
     * It depends on  the 
     * {@link simpledb.log.LogMgr LogMgr} object 
     * that it gets from the class
