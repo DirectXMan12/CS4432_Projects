@@ -19,8 +19,8 @@ import simpledb.file.*;
  * @author Edward Sciore
  */
 public class BufferMgr {
-   private static final long MAX_TIME = 10000; // 10 seconds
-   private BasicBufferMgr bufferMgr;
+   protected static final long MAX_TIME = 10000; // 10 seconds
+   protected BasicBufferMgr bufferMgr;
    
    /**
     * Creates a new buffer manager having the specified 
@@ -35,7 +35,8 @@ public class BufferMgr {
     * is called first.
     * @param numbuffers the number of buffer slots to allocate
     */
-   public BufferMgr(int numbuffers) {
+   public BufferMgr(int numbuffers)
+   {
       bufferMgr = new BasicBufferMgr(numbuffers);
    }
    
@@ -118,7 +119,7 @@ public class BufferMgr {
       return bufferMgr.available();
    }
    
-   private boolean waitingTooLong(long starttime) {
+   protected boolean waitingTooLong(long starttime) {
       return System.currentTimeMillis() - starttime > MAX_TIME;
    }
 }
