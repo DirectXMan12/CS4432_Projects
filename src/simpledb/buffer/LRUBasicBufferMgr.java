@@ -24,6 +24,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		super(numbuffs);
 		numAvailable = numbuffs;
 		_bufPool = new PriorityQueue<TimedBuffer>(numbuffs);
+		for(int i = 0; i < numbuffs; i++) _bufPool.add(new TimedBuffer());
 		
 	}
 	
@@ -31,7 +32,8 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected Buffer findExistingBuffer(Block blk)
 	{
 		// TODO: make a more efficient version of this
-		TimedBuffer[] bufferpool = (TimedBuffer[]) _bufPool.toArray();
+		TimedBuffer[] bufferpool = new TimedBuffer[_bufPool.size()];
+		bufferpool = _bufPool.toArray(bufferpool);
 		for (Buffer buff : bufferpool)
 		{
 			Block b = buff.block();
