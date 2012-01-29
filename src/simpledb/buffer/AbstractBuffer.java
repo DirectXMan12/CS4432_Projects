@@ -1,21 +1,19 @@
+/**
+ * 
+ */
 package simpledb.buffer;
 
-import simpledb.server.SimpleDB;
-import simpledb.file.*;
+import simpledb.file.Block;
 
 /**
- * An individual buffer.
- * A buffer wraps a page and stores information about its status,
- * such as the disk block associated with the page,
- * the number of times the block has been pinned,
- * whether the contents of the page have been modified,
- * and if so, the id of the modifying transaction and
- * the LSN of the corresponding log record.
- * @author Edward Sciore
+ * @author directxman12
+ *
  */
-public class Buffer extends AbstractBuffer {
-   private Page contents = new Page();
-   private int logSequenceNumber = -1; // negative means no corresponding log record
+public abstract class AbstractBuffer
+{
+   protected Block blk = null;
+   protected int pins = 0;
+   protected int modifiedBy = -1;  // negative means not modified
 
    /**
     * Creates a new buffer, wrapping a new 
@@ -31,7 +29,7 @@ public class Buffer extends AbstractBuffer {
     * {@link simpledb.server.SimpleDB#initFileAndLogMgr(String)} or
     * is called first.
     */
-   public Buffer() {}
+   public AbstractBuffer() {}
    
    /**
     * Returns the integer value at the specified offset of the
@@ -41,9 +39,7 @@ public class Buffer extends AbstractBuffer {
     * @param offset the byte offset of the page
     * @return the integer value at that offset
     */
-   public int getInt(int offset) {
-      return contents.getInt(offset);
-   }
+   public abstract int getInt(int offset) ;
 
    /**
     * Returns the string value at the specified offset of the
@@ -53,9 +49,7 @@ public class Buffer extends AbstractBuffer {
     * @param offset the byte offset of the page
     * @return the string value at that offset
     */
-   public String getString(int offset) {
-      return contents.getString(offset);
-   }
+   public abstract String getString(int offset) ;
 
    /**
     * Writes an integer to the specified offset of the
@@ -71,12 +65,7 @@ public class Buffer extends AbstractBuffer {
     * @param txnum the id of the transaction performing the modification
     * @param lsn the LSN of the corresponding log record
     */
-   public void setInt(int offset, int val, int txnum, int lsn) {
-      modifiedBy = txnum;
-      if (lsn >= 0)
-	      logSequenceNumber = lsn;
-      contents.setInt(offset, val);
-   }
+   public abstract void setInt(int offset, int val, int txnum, int lsn) ;
 
    /**
     * Writes a string to the specified offset of the
@@ -92,11 +81,15 @@ public class Buffer extends AbstractBuffer {
     * @param txnum the id of the transaction performing the modification
     * @param lsn the LSN of the corresponding log record
     */
-   public void setString(int offset, String val, int txnum, int lsn) {
-      modifiedBy = txnum;
-      if (lsn >= 0)
-	      logSequenceNumber = lsn;
-      contents.setString(offset, val);
+   public abstract void setString(int offset, String val, int txnum, int lsn) ;
+
+   /**
+    * Returns a reference to the disk block
+    * that the buffer is pinned to.
+    * @return a reference to a disk block
+    */
+   public Block block() {
+      return blk;
    }
 
    /**
@@ -106,12 +99,39 @@ public class Buffer extends AbstractBuffer {
     * record has been written to disk prior to writing
     * the page to disk.
     */
-   protected void flush() {
-      if (modifiedBy >= 0) {
-         SimpleDB.logMgr().flush(logSequenceNumber);
-         contents.write(blk);
-         modifiedBy = -1;
-      }
+   protected abstract void flush() ;
+
+   /**
+    * Increases the buffer's pin count.
+    */
+   void pin() {
+      pins++;
+   }
+
+   /**
+    * Decreases the buffer's pin count.
+    */
+   void unpin() {
+      pins--;
+   }
+
+   /**
+    * Returns true if the buffer is currently pinned
+    * (that is, if it has a nonzero pin count).
+    * @return true if the buffer is pinned
+    */
+   boolean isPinned() {
+      return pins > 0;
+   }
+
+   /**
+    * Returns true if the buffer is dirty
+    * due to a modification by the specified transaction.
+    * @param txnum the id of the transaction
+    * @return true if the transaction modified the buffer
+    */
+   boolean isModifiedBy(int txnum) {
+      return txnum == modifiedBy;
    }
 
    /**
@@ -121,12 +141,7 @@ public class Buffer extends AbstractBuffer {
     * of the previous page are first written to disk.
     * @param b a reference to the data block
     */
-   protected void assignToBlock(Block b) {
-      flush();
-      blk = b;
-      contents.read(blk);
-      pins = 0;
-   }
+   protected abstract void assignToBlock(Block b) ;
 
    /**
     * Initializes the buffer's page according to the specified formatter,
@@ -136,10 +151,5 @@ public class Buffer extends AbstractBuffer {
     * @param filename the name of the file
     * @param fmtr a page formatter, used to initialize the page
     */
-   protected void assignToNew(String filename, PageFormatter fmtr) {
-      flush();
-      fmtr.format(contents);
-      blk = contents.append(filename);
-      pins = 0;
-   }
+   protected abstract void assignToNew(String filename, PageFormatter fmtr);
 }

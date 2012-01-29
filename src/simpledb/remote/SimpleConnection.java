@@ -1,7 +1,7 @@
 package simpledb.remote;
 
-import java.sql.*;
-import java.util.concurrent.Executor;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * An adapter class that wraps RemoteConnection.

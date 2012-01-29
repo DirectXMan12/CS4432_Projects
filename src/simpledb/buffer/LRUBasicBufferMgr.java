@@ -3,9 +3,6 @@
  */
 package simpledb.buffer;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
 import simpledb.file.Block;
 
 /**
@@ -14,7 +11,7 @@ import simpledb.file.Block;
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
-	protected PriorityQueue<TimedBuffer> _bufPool;
+	protected SortedQueue<TimedBuffer> _bufPool;
 
 	/**
 	 * @param numbuffs
@@ -23,28 +20,24 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	{
 		super(numbuffs);
 		numAvailable = numbuffs;
-		_bufPool = new PriorityQueue<TimedBuffer>(numbuffs);
+		_bufPool = new SortedQueue<TimedBuffer>();
 		for(int i = 0; i < numbuffs; i++) _bufPool.add(new TimedBuffer());
 		
 	}
 	
 	@Override
-	protected Buffer findExistingBuffer(Block blk)
+	protected AbstractBuffer findExistingBuffer(Block blk)
 	{
-		// TODO: make a more efficient version of this
-		TimedBuffer[] bufferpool = new TimedBuffer[_bufPool.size()];
-		bufferpool = _bufPool.toArray(bufferpool);
-		for (Buffer buff : bufferpool)
+		for (AbstractBuffer buff : _bufPool)
 		{
 			Block b = buff.block();
-			if (b != null && b.equals(blk))
-			return buff;
+			if (b != null && b.equals(blk)) return buff;
 		}
 		return null;
 	}
 
 	@Override
-	protected Buffer chooseUnpinnedBuffer()
+	protected AbstractBuffer chooseUnpinnedBuffer()
 	{
 		return _bufPool.peek();
 	}
@@ -52,8 +45,6 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	void flushAll(int txnum)
 	{
-      for (Buffer buff : _bufPool)
-          if (buff.isModifiedBy(txnum))
-          buff.flush();
+      for (AbstractBuffer buff : _bufPool) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
 }

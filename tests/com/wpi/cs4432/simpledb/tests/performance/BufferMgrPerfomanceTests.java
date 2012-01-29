@@ -46,7 +46,6 @@ public class BufferMgrPerfomanceTests
 		{
 			
 		}
-		final Object mut = new Object();
 		
 		serverThread = new Thread(new Runnable() {
 			

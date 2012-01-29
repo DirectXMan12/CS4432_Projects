@@ -7,8 +7,9 @@ import simpledb.file.*;
  * @author Edward Sciore
  *
  */
-class BasicBufferMgr extends AbstractBasicBufferMgr {
-   protected Buffer[] bufferpool;
+class BasicBufferMgr extends AbstractBasicBufferMgr
+{
+   protected TimedBuffer[] bufferpool;
    
    /**
     * Creates a buffer manager having the specified number 
@@ -26,9 +27,9 @@ class BasicBufferMgr extends AbstractBasicBufferMgr {
    BasicBufferMgr(int numbuffs)
    {
 	  super(numbuffs);
-      bufferpool = new Buffer[numbuffs];
+      bufferpool = new TimedBuffer[numbuffs];
       for (int i=0; i<numbuffs; i++)
-         bufferpool[i] = new Buffer();
+         bufferpool[i] = new TimedBuffer();
    }
    
    /**

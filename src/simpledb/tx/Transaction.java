@@ -108,7 +108,7 @@ public class Transaction {
     */
    public int getInt(Block blk, int offset) {
       concurMgr.sLock(blk);
-      Buffer buff = myBuffers.getBuffer(blk);
+      AbstractBuffer buff = myBuffers.getBuffer(blk);
       return buff.getInt(offset);
    }
    
@@ -123,7 +123,7 @@ public class Transaction {
     */
    public String getString(Block blk, int offset) {
       concurMgr.sLock(blk);
-      Buffer buff = myBuffers.getBuffer(blk);
+      AbstractBuffer buff = myBuffers.getBuffer(blk);
       return buff.getString(offset);
    }
    
@@ -142,7 +142,7 @@ public class Transaction {
     */
    public void setInt(Block blk, int offset, int val) {
       concurMgr.xLock(blk);
-      Buffer buff = myBuffers.getBuffer(blk);
+      AbstractBuffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setInt(buff, offset, val);
       buff.setInt(offset, val, txnum, lsn);
    }
@@ -162,7 +162,7 @@ public class Transaction {
     */
    public void setString(Block blk, int offset, String val) {
       concurMgr.xLock(blk);
-      Buffer buff = myBuffers.getBuffer(blk);
+      AbstractBuffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setString(buff, offset, val);
       buff.setString(offset, val, txnum, lsn);
    }

@@ -1,10 +1,17 @@
 package simpledb.tx.recovery;
 
-import static simpledb.tx.recovery.LogRecord.*;
+import static simpledb.tx.recovery.LogRecord.CHECKPOINT;
+import static simpledb.tx.recovery.LogRecord.COMMIT;
+import static simpledb.tx.recovery.LogRecord.ROLLBACK;
+import static simpledb.tx.recovery.LogRecord.START;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
+import simpledb.buffer.AbstractBuffer;
 import simpledb.file.Block;
-import simpledb.buffer.Buffer;
 import simpledb.server.SimpleDB;
-import java.util.*;
 
 /**
  * The recovery manager.  Each transaction has its own recovery manager.
@@ -61,7 +68,7 @@ public class RecoveryMgr {
     * @param offset the offset of the value in the page
     * @param newval the value to be written
     */
-   public int setInt(Buffer buff, int offset, int newval) {
+   public int setInt(AbstractBuffer buff, int offset, int newval) {
       int oldval = buff.getInt(offset);
       Block blk = buff.block();
       if (isTempBlock(blk))
@@ -78,7 +85,7 @@ public class RecoveryMgr {
     * @param offset the offset of the value in the page
     * @param newval the value to be written
     */
-   public int setString(Buffer buff, int offset, String newval) {
+   public int setString(AbstractBuffer buff, int offset, String newval) {
       String oldval = buff.getString(offset);
       Block blk = buff.block();
       if (isTempBlock(blk))

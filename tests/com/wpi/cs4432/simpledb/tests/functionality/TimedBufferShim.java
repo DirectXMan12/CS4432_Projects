@@ -1,94 +1,70 @@
 /**
  * 
  */
-package simpledb.buffer;
+package com.wpi.cs4432.simpledb.tests.functionality;
 
 import java.util.Date;
-import java.util.SortedSet;
 
+import simpledb.buffer.AbstractBuffer;
+import simpledb.buffer.PageFormatter;
+import simpledb.buffer.TimedBuffer;
 import simpledb.file.Block;
 
 /**
  * @author directxman12
- * Basically, this is just a {@link simpledb.buffer.Buffer Buffer} which
- * keeps track of when it was last used 
- * @param <E>
+ *
  */
-public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
+public class TimedBufferShim extends TimedBuffer
 {
 	protected long _lastUsed; 
-	protected SortedQueue<TimedBuffer> _list;
 
 	/**
 	 * 
 	 */
-	public TimedBuffer()
+	public TimedBufferShim()
 	{
 		super();
 		_lastUsed = 0;
 	}
 	
-	public void setSet(SortedQueue<TimedBuffer> sortedQueue)
-	{
-		_list = sortedQueue;
-	}
-	
-	protected synchronized void used()
-	{
-		if (_list != null)
-		{
-			_list.remove(this);
-			_lastUsed = new Date().getTime();
-			_list.add(this);
-		}
-		else _lastUsed = new Date().getTime();
-	}
-	
-	public synchronized long getLastUsed()
-	{
-		return _lastUsed;
-	}
-
 	@Override
 	public synchronized int getInt(int offset)
 	{
 		used();
-		return super.getInt(offset);
+		return 0;
 	}
 
 	@Override
 	public synchronized String getString(int offset)
 	{
 		used();
-		return super.getString(offset);
+		return "";
 	}
 
 	@Override
 	public synchronized void setInt(int offset, int val, int txnum, int lsn)
 	{
 		used();
-		super.setInt(offset, val, txnum, lsn);
 	}
 
 	@Override
 	public synchronized void setString(int offset, String val, int txnum, int lsn)
 	{
 		used();
-		super.setString(offset, val, txnum, lsn);
 	}
 
 	@Override
 	public synchronized void assignToBlock(Block b)
 	{
 		used();
-		super.assignToBlock(b);
+		this.blk = b;
 	}
 
 	@Override
 	public synchronized void assignToNew(String filename, PageFormatter fmtr)
 	{
 		used();
-		super.assignToNew(filename, fmtr);
+		this.blk = new Block(filename, 0);
 	}
 
 	@Override
@@ -102,9 +78,20 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof TimedBuffer) return ((TimedBuffer)obj).block().equals(this.block());
+		if (obj instanceof TimedBufferShim) return ((TimedBufferShim)obj).block().equals(this.block());
 		else return false;
 	}
+
+	@Override
+	protected void flush()
+	{
+		// do nothing in the shim
+	}
 	
+	@Override
+	public String toString()
+	{
+		return "TimedBufferShim: blk={" + blk.fileName() + ", " + blk.number() + "}";
+	}
 
 }

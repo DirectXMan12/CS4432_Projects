@@ -33,9 +33,9 @@ public abstract class AbstractBasicBufferMgr
 	* @param blk a reference to a disk block
 	* @return the pinned buffer
 	*/
-	synchronized Buffer pin(Block blk)
+	synchronized AbstractBuffer pin(Block blk)
 	{
-		Buffer buff = findExistingBuffer(blk);
+		AbstractBuffer buff = findExistingBuffer(blk);
 		if (buff == null) {
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
@@ -55,9 +55,9 @@ public abstract class AbstractBasicBufferMgr
 	* @param fmtr a pageformatter object, used to format the new block
 	* @return the pinned buffer
 	*/
-	synchronized Buffer pinNew(String filename, PageFormatter fmtr)
+	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr)
 	{
-		Buffer buff = chooseUnpinnedBuffer();
+		AbstractBuffer buff = chooseUnpinnedBuffer();
 	    if (buff == null) return null;
 	    buff.assignToNew(filename, fmtr);
 	    numAvailable--;
@@ -69,7 +69,7 @@ public abstract class AbstractBasicBufferMgr
 	* Unpins the specified buffer.
 	* @param buff the buffer to be unpinned
 	*/
-	synchronized void unpin(Buffer buff)
+	synchronized void unpin(AbstractBuffer buff)
 	{
 		buff.unpin();
 		if (!buff.isPinned()) numAvailable++;
@@ -84,7 +84,7 @@ public abstract class AbstractBasicBufferMgr
 		return numAvailable;
 	}
 	   
-	protected abstract Buffer findExistingBuffer(Block blk);
+	protected abstract AbstractBuffer findExistingBuffer(Block blk);
 	   
-	protected abstract Buffer chooseUnpinnedBuffer();
+	protected abstract AbstractBuffer chooseUnpinnedBuffer();
 }
