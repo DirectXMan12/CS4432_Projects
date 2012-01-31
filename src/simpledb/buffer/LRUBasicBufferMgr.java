@@ -3,6 +3,8 @@
  */
 package simpledb.buffer;
 
+import java.util.HashMap;
+
 import simpledb.file.Block;
 
 /**
@@ -12,6 +14,7 @@ import simpledb.file.Block;
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
 	protected SortedQueue<TimedBuffer> _bufPool;
+	protected HashMap<Block, AbstractBuffer> mapAllocated;
 
 	/**
 	 * @param numbuffs
@@ -22,7 +25,24 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		numAvailable = numbuffs;
 		_bufPool = new SortedQueue<TimedBuffer>();
 		for(int i = 0; i < numbuffs; i++) _bufPool.add(new TimedBuffer());
+		mapAllocated = new HashMap<Block, AbstractBuffer>(numbuffs);
 		
+	}
+	
+	@Override
+	synchronized AbstractBuffer pin(Block blk){
+		AbstractBuffer buff = super.pin(blk);
+		if(buff == null) 
+			mapAllocated.put(blk, buff);
+		return buff;
+	}
+	
+	@Override
+	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr){
+		AbstractBuffer buff = super.pinNew(filename, fmtr);
+		if(buff == null) 
+			mapAllocated.put(buff.block(), buff);
+		return buff;
 	}
 	
 	@Override

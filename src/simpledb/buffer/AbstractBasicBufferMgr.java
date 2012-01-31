@@ -14,12 +14,10 @@ import simpledb.file.Block;
 public abstract class AbstractBasicBufferMgr
 {
 	protected int numAvailable;
-	protected HashMap<Block, AbstractBuffer> mapAllocated;
 	
 	public AbstractBasicBufferMgr(int numbuffs)
 	{
 		numAvailable = numbuffs;
-		mapAllocated = new HashMap<Block, AbstractBuffer>(numbuffs);
 	}
 	   
 	   /**
@@ -44,7 +42,6 @@ public abstract class AbstractBasicBufferMgr
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
 		    buff.assignToBlock(blk);
-		    mapAllocated.put(blk, buff);
 		}
 		if (!buff.isPinned()) numAvailable--;
 		buff.pin();
@@ -65,7 +62,6 @@ public abstract class AbstractBasicBufferMgr
 		AbstractBuffer buff = chooseUnpinnedBuffer();
 	    if (buff == null) return null;
 	    buff.assignToNew(filename, fmtr);
-	    mapAllocated.put(buff.block(), buff);
 	    numAvailable--;
 	    buff.pin();
 	    return buff;
