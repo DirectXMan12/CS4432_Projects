@@ -28,12 +28,14 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	protected AbstractBuffer findExistingBuffer(Block blk)
 	{
-		for (AbstractBuffer buff : _bufPool)
+		/*for (AbstractBuffer buff : _bufPool)
 		{
 			Block b = buff.block();
 			if (b != null && b.equals(blk)) return buff;
 		}
-		return null;
+		return null;*/
+		return mapAllocated.get(blk);
+		
 	}
 
 	@Override
