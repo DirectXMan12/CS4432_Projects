@@ -47,7 +47,6 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr)
 	{
 		AbstractBuffer buff = super.pinNew(filename, fmtr);
-		mapAllocated.put(buff.block(), buff);
 		_allocatedBufMap.put(buff.block(), buff);
 		return buff;
 	}
