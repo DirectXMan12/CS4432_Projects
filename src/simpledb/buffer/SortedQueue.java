@@ -49,7 +49,7 @@ public class SortedQueue<E> extends TreeSet<E> implements Collection<E>, Queue<E
 	@Override
 	public boolean add(E e)
 	{
-		if (e instanceof TimedBuffer) ((TimedBuffer)e).setSet((SortedQueue<TimedBuffer>)this);
+		//if (e instanceof TimedBuffer) ((TimedBuffer)e).setAvailSet((SortedQueue<TimedBuffer>)this);
 		return super.add(e);
 	}
 }

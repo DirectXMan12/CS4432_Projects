@@ -3,9 +3,6 @@
  */
 package com.wpi.cs4432.simpledb.tests.functionality;
 
-import java.util.Date;
-
-import simpledb.buffer.AbstractBuffer;
 import simpledb.buffer.PageFormatter;
 import simpledb.buffer.TimedBuffer;
 import simpledb.file.Block;
@@ -16,16 +13,25 @@ import simpledb.file.Block;
  */
 public class TimedBufferShim extends TimedBuffer
 {
-	protected long _lastUsed; 
+	//protected long _lastUsed; 
 
 	/**
 	 * 
 	 */
-	public TimedBufferShim()
+	public TimedBufferShim(long timeUsed)
 	{
 		super();
-		_lastUsed = 0;
+		_lastUsed = timeUsed;
 	}
+	
+	@Override
+	protected void used()
+	{
+		long oldLUsed = _lastUsed;
+		super.used();
+		_lastUsed = oldLUsed;
+	}
+	
 	
 	@Override
 	public synchronized int getInt(int offset)
@@ -86,6 +92,16 @@ public class TimedBufferShim extends TimedBuffer
 	protected void flush()
 	{
 		// do nothing in the shim
+	}
+	
+	public void triggerUsed()
+	{
+		used();
+	}
+	
+	public void setUsed(long u)
+	{
+		_lastUsed = u;
 	}
 	
 	@Override

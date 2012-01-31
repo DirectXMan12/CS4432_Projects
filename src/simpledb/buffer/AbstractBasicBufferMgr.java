@@ -3,8 +3,6 @@
  */
 package simpledb.buffer;
 
-import java.util.HashMap;
-
 import simpledb.file.Block;
 
 /**

@@ -6,8 +6,6 @@ import simpledb.tx.Transaction;
 import simpledb.log.LogMgr;
 import simpledb.metadata.MetadataMgr;
 import simpledb.planner.*;
-import simpledb.opt.HeuristicQueryPlanner;
-import simpledb.index.planner.IndexUpdatePlanner;
 
 /**
  * The class that provides system-wide static global values.

@@ -4,7 +4,7 @@
 package simpledb.buffer;
 
 import java.util.Date;
-import java.util.SortedSet;
+import java.util.Map;
 
 import simpledb.file.Block;
 
@@ -18,6 +18,7 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 {
 	protected long _lastUsed; 
 	protected SortedQueue<TimedBuffer> _list;
+	protected Map<Block, AbstractBuffer> _map;
 
 	/**
 	 * 
@@ -28,9 +29,14 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 		_lastUsed = 0;
 	}
 	
-	public void setSet(SortedQueue<TimedBuffer> sortedQueue)
+	public void setAvailSet(SortedQueue<TimedBuffer> sortedQueue)
 	{
 		_list = sortedQueue;
+	}
+	
+	public void setPinnedMap(Map<Block, AbstractBuffer> pinnedMap)
+	{
+		_map = pinnedMap;
 	}
 	
 	protected synchronized void used()
@@ -104,6 +110,17 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 	{
 		if (obj instanceof TimedBuffer) return ((TimedBuffer)obj).block().equals(this.block());
 		else return false;
+	}
+
+	@Override
+	void unpin()
+	{
+		super.unpin();
+		if (pins < 1) 
+		{
+			_list.add(this);
+			_map.remove(this);
+		}
 	}
 	
 
