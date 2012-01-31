@@ -29,6 +29,14 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 		_lastUsed = 0;
 	}
 	
+	public TimedBuffer(SortedQueue<TimedBuffer> l, Map<Block, AbstractBuffer> m)
+	{
+		super();
+		_lastUsed = 0;
+		_list = l;
+		_map = m;
+	}
+	
 	public void setAvailSet(SortedQueue<TimedBuffer> sortedQueue)
 	{
 		_list = sortedQueue;
@@ -108,6 +116,9 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 	@Override
 	public boolean equals(Object obj)
 	{
+		if (obj == null) return false;
+		if (this.block() == null && ((TimedBuffer)obj).block() == null) return true;
+		else if (this.block() == null || ((TimedBuffer)obj).block() == null) return false;
 		if (obj instanceof TimedBuffer) return ((TimedBuffer)obj).block().equals(this.block());
 		else return false;
 	}
@@ -118,8 +129,12 @@ public class TimedBuffer extends Buffer implements Comparable<TimedBuffer>
 		super.unpin();
 		if (pins < 1) 
 		{
-			_list.add(this);
-			_map.remove(this);
+			if (_list == null)
+			{
+				System.out.println("null list!");
+			}
+			if (_list != null) _list.add(this);
+			if (_map != null) _map.remove(this);
 		}
 	}
 	

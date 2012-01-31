@@ -27,10 +27,8 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		_allocatedBufMap = new HashMap<Block, AbstractBuffer>(numbuffs);
 		for(int i = 0; i < numbuffs; i++)
 		{
-			TimedBuffer b = new TimedBuffer();
-			b.setAvailSet(_availBufPool);
-			b.setPinnedMap(_allocatedBufMap);
-			_availBufPool.add(new TimedBuffer());
+			TimedBuffer b = new TimedBuffer(_availBufPool, _allocatedBufMap);
+			_availBufPool.add(b);
 		}
 		
 	}

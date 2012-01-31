@@ -77,7 +77,7 @@ public class BufferMgrPerfomanceTests
 			try
 			{
 				mainConnection = mainDriver.connect(connURL, null);
-				System.out.println("cheese");
+				//System.out.println("cheese");
 				return;
 			}
 			catch(Exception ex)

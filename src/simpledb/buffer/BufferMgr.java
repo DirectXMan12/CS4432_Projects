@@ -37,7 +37,7 @@ public class BufferMgr {
     */
    public BufferMgr(int numbuffers)
    {
-      bufferMgr = new BasicBufferMgr(numbuffers);
+      bufferMgr = new LRUBasicBufferMgr(numbuffers);
    }
    
    /**
