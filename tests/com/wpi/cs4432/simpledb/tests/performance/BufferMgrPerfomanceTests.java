@@ -3,12 +3,12 @@
  */
 package com.wpi.cs4432.simpledb.tests.performance;
 
-import static org.junit.Assert.*;
-
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.sql.Connection;
 import java.sql.Driver;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,6 +20,7 @@ import simpledb.remote.RemoteDriver;
 import simpledb.remote.RemoteDriverImpl;
 import simpledb.remote.SimpleDriver;
 import simpledb.server.SimpleDB;
+import simpledb.studentClient.CreateStudentDB;
 
 /**
  * @author directxman12
@@ -72,25 +73,49 @@ public class BufferMgrPerfomanceTests
 		
 		mainDriver = new SimpleDriver();
 		String connURL = "jdbc:simpledb://localhost";
-		while(true)
+		boolean b = true;
+		while(b)
 		{
 			try
 			{
 				mainConnection = mainDriver.connect(connURL, null);
-				//System.out.println("cheese");
-				return;
+				
+				b = false;
 			}
 			catch(Exception ex)
 			{
 				continue;
 			}
 		}
+		
+		Statement stmt = mainConnection.createStatement();
+		try
+		{
+			stmt.executeQuery("Select SId from STUDENT");
+		}
+		catch(SQLException ex)
+		{
+			CreateStudentDB.main(new String[] {});
+		}
 	}
 	
 	@Test
-	public void test1()
+	public void testInitConn() throws SQLException
 	{
-		assertTrue(true);
+		Statement stmt = mainConnection.createStatement();
+		stmt.executeQuery("select SId, SName, MajorId, GradYear from STUDENT");
+		
+	}
+	
+	@Test
+	public void testStudentDBSelectPerf() throws SQLException
+	{
+		Statement stmt = mainConnection.createStatement();
+		for(int i = 1; i < 1000; i++)
+		{
+			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT;");
+			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT;");
+		}
 	}
 
 	/**
