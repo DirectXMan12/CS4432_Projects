@@ -32,16 +32,14 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	synchronized AbstractBuffer pin(Block blk){
 		AbstractBuffer buff = super.pin(blk);
-		if(buff == null) 
-			mapAllocated.put(blk, buff);
+		mapAllocated.put(blk, buff);
 		return buff;
 	}
 	
 	@Override
 	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr){
 		AbstractBuffer buff = super.pinNew(filename, fmtr);
-		if(buff == null) 
-			mapAllocated.put(buff.block(), buff);
+		mapAllocated.put(buff.block(), buff);
 		return buff;
 	}
 	
