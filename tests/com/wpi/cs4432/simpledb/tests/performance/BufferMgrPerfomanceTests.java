@@ -16,6 +16,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import simpledb.buffer.BasicBufferMgr;
+import simpledb.buffer.BufferMgr;
+import simpledb.buffer.LRUBasicBufferMgr;
 import simpledb.remote.RemoteDriver;
 import simpledb.remote.RemoteDriverImpl;
 import simpledb.remote.SimpleDriver;
@@ -31,6 +34,7 @@ public class BufferMgrPerfomanceTests
 	static Thread serverThread;
 	static Driver mainDriver;
 	static Connection mainConnection;
+	Statement stmt;
 	
 	
 	/**
@@ -54,6 +58,7 @@ public class BufferMgrPerfomanceTests
 			public void run() {
 				try
 				{
+					BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
 					// configure and initialize the database
 					SimpleDB.init("studentdb");
 					System.out.println("finished init of SimpleDB");
@@ -102,19 +107,25 @@ public class BufferMgrPerfomanceTests
 	@Test
 	public void testInitConn() throws SQLException
 	{
-		Statement stmt = mainConnection.createStatement();
 		stmt.executeQuery("select SId, SName, MajorId, GradYear from STUDENT");
-		
 	}
 	
 	@Test
 	public void testStudentDBSelectPerf() throws SQLException
 	{
-		Statement stmt = mainConnection.createStatement();
 		for(int i = 1; i < 1000; i++)
 		{
 			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT;");
-			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT;");
+		}
+	}
+	
+	@Test
+	public void testStudentDBSortPerf() throws SQLException
+	{
+		for (int i = 1; i < 1000; i++)
+		{
+			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
 		}
 	}
 
@@ -133,7 +144,7 @@ public class BufferMgrPerfomanceTests
 	@Before
 	public void setUp() throws Exception
 	{
-	
+		stmt = mainConnection.createStatement();
 	}
 
 	/**

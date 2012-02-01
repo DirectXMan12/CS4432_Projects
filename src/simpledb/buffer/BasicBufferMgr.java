@@ -7,7 +7,7 @@ import simpledb.file.*;
  * @author Edward Sciore
  *
  */
-class BasicBufferMgr extends AbstractBasicBufferMgr
+public class BasicBufferMgr extends AbstractBasicBufferMgr
 {
    protected Buffer[] bufferpool;
    
@@ -24,7 +24,7 @@ class BasicBufferMgr extends AbstractBasicBufferMgr
     * is called first.
     * @param numbuffs the number of buffer slots to allocate
     */
-   BasicBufferMgr(int numbuffs)
+   public BasicBufferMgr(int numbuffs)
    {
 	  super(numbuffs);
       bufferpool = new Buffer[numbuffs];

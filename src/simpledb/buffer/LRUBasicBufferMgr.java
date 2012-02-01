@@ -4,6 +4,7 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import simpledb.file.Block;
@@ -14,7 +15,7 @@ import simpledb.file.Block;
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
-	protected LinkedBlockingQueue<Buffer> _availBufPool;
+	protected LinkedBlockingQueue<Buffer> _availBufPool; // preforms differently if linked vs array
 	protected HashMap<Block, Buffer> _allocatedBufMap;
 	protected int _queueSize;
 

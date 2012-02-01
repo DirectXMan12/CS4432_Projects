@@ -1,6 +1,7 @@
 package simpledb.buffer;
 
-import simpledb.file.*;
+import simpledb.file.Block;
+import simpledb.file.FileMgr;
 
 /**
  * The publicly-accessible buffer manager.
@@ -22,6 +23,14 @@ public class BufferMgr {
    protected static final long MAX_TIME = 10000; // 10 seconds
    protected AbstractBasicBufferMgr bufferMgr;
    
+   protected static Class _buffMgrType;
+   
+   public static void setBasicBuffMgrType(Class cls)
+   {
+	   if(!AbstractBasicBufferMgr.class.isAssignableFrom(cls)) throw new RuntimeException("BasicBufferManagers need to extend AbstractBasicBufferMgr!");
+	   _buffMgrType = cls;
+   }
+   
    /**
     * Creates a new buffer manager having the specified 
     * number of buffers.
@@ -37,7 +46,15 @@ public class BufferMgr {
     */
    public BufferMgr(int numbuffers)
    {
-      bufferMgr = new LRUBasicBufferMgr(numbuffers);
+	   if (_buffMgrType == null) _buffMgrType = LRUBasicBufferMgr.class;
+	   try
+	   {
+		   bufferMgr = (AbstractBasicBufferMgr) _buffMgrType.getConstructor(Integer.TYPE).newInstance(numbuffers);
+	   }
+	   catch (Exception e)
+	   {
+		   throw new RuntimeException("Error instantiating the buffer manager");
+	   } 
    }
    
    /**
