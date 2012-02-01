@@ -17,6 +17,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
 	protected ArrayBlockingQueue<AbstractBuffer> _availBufPool;
 	protected HashMap<Block, AbstractBuffer> _allocatedBufMap;
+	protected int _queueSize;
 
 	/**
 	 * @param numbuffs
@@ -24,6 +25,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	public LRUBasicBufferMgr(int numbuffs)
 	{
 		super(numbuffs);
+		_queueSize = numbuffs;
 		numAvailable = numbuffs;
 		_availBufPool = new ArrayBlockingQueue<AbstractBuffer>(numbuffs);
 		_allocatedBufMap = new HashMap<Block, AbstractBuffer>(numbuffs);
@@ -45,6 +47,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		if (!buff.isPinned()) numAvailable--;
 		buff.pin();
 		_allocatedBufMap.put(blk, buff);
+		//System.out.println(Integer.toString(_allocatedBufMap.size()) + " / " + Integer.toString(_availBufPool.size()));
 		return buff;
 	}
 	
@@ -53,8 +56,10 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected synchronized void unpin(AbstractBuffer buff)
 	{
 		super.unpin(buff);
-		System.out.println(_availBufPool.size());
-		_availBufPool.add(buff);
+		if(buff.pins < 1 /* && !_availBufPool.contains(buff) */)
+		{
+			_availBufPool.add(buff);
+		}
 	}
 
 	@Override
@@ -66,15 +71,23 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	}
 	
 	@Override
-	protected AbstractBuffer findExistingBuffer(Block blk)
+	protected synchronized AbstractBuffer findExistingBuffer(Block blk)
 	{
 		return _allocatedBufMap.get(blk);
 	}
 
 	@Override
-	protected AbstractBuffer chooseUnpinnedBuffer()
+	protected synchronized AbstractBuffer chooseUnpinnedBuffer()
 	{
-		return _availBufPool.poll();
+		AbstractBuffer b = _availBufPool.poll();
+		if (_availBufPool.contains(b)) System.out.println("WTF2!?!");
+		return b;
+	}
+	
+	@Override
+	public int available()
+	{
+		return _availBufPool.size();
 	}
 
 	@Override
