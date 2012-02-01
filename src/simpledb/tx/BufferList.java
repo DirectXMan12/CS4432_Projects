@@ -10,7 +10,7 @@ import java.util.*;
  * @author Edward Sciore
  */
 class BufferList {
-   private Map<Block,AbstractBuffer> buffers = new HashMap<Block,AbstractBuffer>();
+   private Map<Block,Buffer> buffers = new HashMap<Block,Buffer>();
    private List<Block> pins = new ArrayList<Block>();
    private BufferMgr bufferMgr = SimpleDB.bufferMgr();
    
@@ -21,7 +21,7 @@ class BufferList {
     * @param blk a reference to the disk block
     * @return the buffer pinned to that block
     */
-   AbstractBuffer getBuffer(Block blk) {
+   Buffer getBuffer(Block blk) {
       return buffers.get(blk);
    }
    
@@ -30,7 +30,7 @@ class BufferList {
     * @param blk a reference to the disk block
     */
    void pin(Block blk) {
-	  AbstractBuffer buff = bufferMgr.pin(blk);
+	  Buffer buff = bufferMgr.pin(blk);
       buffers.put(blk, buff);
       pins.add(blk);
    }
@@ -43,7 +43,7 @@ class BufferList {
     * @return a reference to the newly-created block
     */
    Block pinNew(String filename, PageFormatter fmtr) {
-	  AbstractBuffer buff = bufferMgr.pinNew(filename, fmtr);
+	  Buffer buff = bufferMgr.pinNew(filename, fmtr);
       Block blk = buff.block();
       buffers.put(blk, buff);
       pins.add(blk);
@@ -55,7 +55,7 @@ class BufferList {
     * @param blk a reference to the disk block
     */
    void unpin(Block blk) {
-	  AbstractBuffer buff = buffers.get(blk);
+	  Buffer buff = buffers.get(blk);
       bufferMgr.unpin(buff);
       pins.remove(blk);
       if (!pins.contains(blk))
@@ -67,7 +67,7 @@ class BufferList {
     */
    void unpinAll() {
       for (Block blk : pins) {
-    	 AbstractBuffer buff = buffers.get(blk);
+    	 Buffer buff = buffers.get(blk);
          bufferMgr.unpin(buff);
       }
       buffers.clear();

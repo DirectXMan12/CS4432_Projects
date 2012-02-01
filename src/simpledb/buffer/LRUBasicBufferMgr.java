@@ -4,7 +4,6 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import simpledb.file.Block;
@@ -15,8 +14,8 @@ import simpledb.file.Block;
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
-	protected LinkedBlockingQueue<AbstractBuffer> _availBufPool;
-	protected HashMap<Block, AbstractBuffer> _allocatedBufMap;
+	protected LinkedBlockingQueue<Buffer> _availBufPool;
+	protected HashMap<Block, Buffer> _allocatedBufMap;
 	protected int _queueSize;
 
 	/**
@@ -27,16 +26,16 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		super(numbuffs);
 		_queueSize = numbuffs;
 		numAvailable = numbuffs;
-		_availBufPool = new LinkedBlockingQueue<AbstractBuffer>(numbuffs);
-		_allocatedBufMap = new HashMap<Block, AbstractBuffer>(numbuffs);
+		_availBufPool = new LinkedBlockingQueue<Buffer>(numbuffs);
+		_allocatedBufMap = new HashMap<Block, Buffer>(numbuffs);
 		for(int i = 0; i < numbuffs; i++) _availBufPool.add(new Buffer());
 		
 	}
 	
 	@Override
-	synchronized AbstractBuffer pin(Block blk)
+	synchronized Buffer pin(Block blk)
 	{
-		AbstractBuffer buff = findExistingBuffer(blk);
+		Buffer buff = findExistingBuffer(blk);
 		if (buff == null) {
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
@@ -54,7 +53,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	
 	
 	@Override
-	protected synchronized void unpin(AbstractBuffer buff)
+	protected synchronized void unpin(Buffer buff)
 	{
 		super.unpin(buff);
 		if(buff.pins < 1 /* && !_availBufPool.contains(buff) */)
@@ -64,24 +63,24 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	}
 
 	@Override
-	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr)
+	synchronized Buffer pinNew(String filename, PageFormatter fmtr)
 	{
-		AbstractBuffer buff = super.pinNew(filename, fmtr);
+		Buffer buff = super.pinNew(filename, fmtr);
 		if (buff == null) return null;
 		_allocatedBufMap.put(buff.block(), buff);
 		return buff;
 	}
 	
 	@Override
-	protected synchronized AbstractBuffer findExistingBuffer(Block blk)
+	protected synchronized Buffer findExistingBuffer(Block blk)
 	{
 		return _allocatedBufMap.get(blk);
 	}
 
 	@Override
-	protected synchronized AbstractBuffer chooseUnpinnedBuffer()
+	protected synchronized Buffer chooseUnpinnedBuffer()
 	{
-		AbstractBuffer b = _availBufPool.poll();
+		Buffer b = _availBufPool.poll();
 		if (_availBufPool.contains(b))
 		{
 			System.out.println("WTF2!?!");
@@ -98,7 +97,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	void flushAll(int txnum)
 	{
-      for (AbstractBuffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
-      for (AbstractBuffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
+      for (Buffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
+      for (Buffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
 }

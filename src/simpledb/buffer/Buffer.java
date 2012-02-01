@@ -13,9 +13,13 @@ import simpledb.file.*;
  * the LSN of the corresponding log record.
  * @author Edward Sciore
  */
-public class Buffer extends AbstractBuffer {
+public class Buffer {
    private Page contents = new Page();
    private int logSequenceNumber = -1; // negative means no corresponding log record
+   
+   protected Block blk = null;
+   protected int pins = 0;
+   protected int modifiedBy = -1;  // negative means not modified
 
    /**
     * Creates a new buffer, wrapping a new 
@@ -141,5 +145,52 @@ public class Buffer extends AbstractBuffer {
       fmtr.format(contents);
       blk = contents.append(filename);
       pins = 0;
+   }
+
+   /**
+    * Returns a reference to the disk block
+    * that the buffer is pinned to.
+    * @return a reference to a disk block
+    */
+   public Block block() {
+      return blk;
+   }
+
+   /**
+    * Increases the buffer's pin count.
+    */
+   void pin() {
+      pins++;
+   }
+
+   /**
+    * Decreases the buffer's pin count.
+    */
+   void unpin() {
+      pins--;
+   }
+
+   /**
+    * Returns true if the buffer is currently pinned
+    * (that is, if it has a nonzero pin count).
+    * @return true if the buffer is pinned
+    */
+   boolean isPinned() {
+      return pins > 0;
+   }
+
+   /**
+    * Returns true if the buffer is dirty
+    * due to a modification by the specified transaction.
+    * @param txnum the id of the transaction
+    * @return true if the transaction modified the buffer
+    */
+   boolean isModifiedBy(int txnum) {
+      return txnum == modifiedBy;
+   }
+   
+   public String toString()
+   {
+	   return "simpledb.buffer.Buffer@[blk="+this.blk.toString()+"]";
    }
 }

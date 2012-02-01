@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import simpledb.buffer.AbstractBuffer;
+import simpledb.buffer.Buffer;
 import simpledb.file.Block;
 import simpledb.server.SimpleDB;
 
@@ -68,7 +68,7 @@ public class RecoveryMgr {
     * @param offset the offset of the value in the page
     * @param newval the value to be written
     */
-   public int setInt(AbstractBuffer buff, int offset, int newval) {
+   public int setInt(Buffer buff, int offset, int newval) {
       int oldval = buff.getInt(offset);
       Block blk = buff.block();
       if (isTempBlock(blk))
@@ -85,7 +85,7 @@ public class RecoveryMgr {
     * @param offset the offset of the value in the page
     * @param newval the value to be written
     */
-   public int setString(AbstractBuffer buff, int offset, String newval) {
+   public int setString(Buffer buff, int offset, String newval) {
       String oldval = buff.getString(offset);
       Block blk = buff.block();
       if (isTempBlock(blk))

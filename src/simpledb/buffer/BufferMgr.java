@@ -48,10 +48,10 @@ public class BufferMgr {
     * @param blk a reference to a disk block
     * @return the buffer pinned to that block
     */
-   public synchronized AbstractBuffer pin(Block blk) {
+   public synchronized Buffer pin(Block blk) {
       try {
          long timestamp = System.currentTimeMillis();
-         AbstractBuffer buff = bufferMgr.pin(blk);
+         Buffer buff = bufferMgr.pin(blk);
          while (buff == null && !waitingTooLong(timestamp)) {
             wait(MAX_TIME);
             buff = bufferMgr.pin(blk);
@@ -74,10 +74,10 @@ public class BufferMgr {
     * @param fmtr the formatter used to initialize the page
     * @return the buffer pinned to that block
     */
-   public synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr) {
+   public synchronized Buffer pinNew(String filename, PageFormatter fmtr) {
       try {
          long timestamp = System.currentTimeMillis();
-         AbstractBuffer buff = bufferMgr.pinNew(filename, fmtr);
+         Buffer buff = bufferMgr.pinNew(filename, fmtr);
          while (buff == null && !waitingTooLong(timestamp)) {
             wait(MAX_TIME);
             buff = bufferMgr.pinNew(filename, fmtr);
@@ -97,7 +97,7 @@ public class BufferMgr {
     * then the threads on the wait list are notified.
     * @param buff the buffer to be unpinned
     */
-   public synchronized void unpin(AbstractBuffer buff) {
+   public synchronized void unpin(Buffer buff) {
       bufferMgr.unpin(buff);
       if (!buff.isPinned())
          notifyAll();
