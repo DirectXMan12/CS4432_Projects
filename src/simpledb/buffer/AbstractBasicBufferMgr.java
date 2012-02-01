@@ -86,5 +86,6 @@ public abstract class AbstractBasicBufferMgr
 	   
 	protected abstract AbstractBuffer findExistingBuffer(Block blk);
 	   
-	protected abstract AbstractBuffer chooseUnpinnedBuffer();
+	protected abstract AbstractBuffer chooseUnpinnedBuffer();	
+
 }

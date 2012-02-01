@@ -15,7 +15,7 @@ import simpledb.file.Block;
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
-	protected ArrayBlockingQueue<AbstractBuffer> _availBufPool;
+	protected LinkedBlockingQueue<AbstractBuffer> _availBufPool;
 	protected HashMap<Block, AbstractBuffer> _allocatedBufMap;
 	protected int _queueSize;
 
@@ -27,7 +27,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		super(numbuffs);
 		_queueSize = numbuffs;
 		numAvailable = numbuffs;
-		_availBufPool = new ArrayBlockingQueue<AbstractBuffer>(numbuffs);
+		_availBufPool = new LinkedBlockingQueue<AbstractBuffer>(numbuffs);
 		_allocatedBufMap = new HashMap<Block, AbstractBuffer>(numbuffs);
 		for(int i = 0; i < numbuffs; i++) _availBufPool.add(new Buffer());
 		
@@ -41,13 +41,14 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
 		    _allocatedBufMap.remove(buff.block());
-			// _availBufPool.remove(buff); // not needed b/c poll called on choose unpinned buffer
 		    buff.assignToBlock(blk);
 		}
-		if (!buff.isPinned()) numAvailable--;
+		if (!buff.isPinned())
+		{
+			_availBufPool.remove(buff);
+		}
 		buff.pin();
 		_allocatedBufMap.put(blk, buff);
-		//System.out.println(Integer.toString(_allocatedBufMap.size()) + " / " + Integer.toString(_availBufPool.size()));
 		return buff;
 	}
 	
@@ -66,6 +67,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr)
 	{
 		AbstractBuffer buff = super.pinNew(filename, fmtr);
+		if (buff == null) return null;
 		_allocatedBufMap.put(buff.block(), buff);
 		return buff;
 	}
@@ -80,7 +82,10 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected synchronized AbstractBuffer chooseUnpinnedBuffer()
 	{
 		AbstractBuffer b = _availBufPool.poll();
-		if (_availBufPool.contains(b)) System.out.println("WTF2!?!");
+		if (_availBufPool.contains(b))
+		{
+			System.out.println("WTF2!?!");
+		}
 		return b;
 	}
 	

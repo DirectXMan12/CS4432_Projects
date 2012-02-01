@@ -152,4 +152,9 @@ public abstract class AbstractBuffer
     * @param fmtr a page formatter, used to initialize the page
     */
    protected abstract void assignToNew(String filename, PageFormatter fmtr);
+   
+	public String toString()
+	{
+		return "simpledb.buffer.Buffer@[blk="+this.blk.toString()+"]";
+	}
 }
