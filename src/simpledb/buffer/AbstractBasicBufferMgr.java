@@ -69,7 +69,7 @@ public abstract class AbstractBasicBufferMgr
 	* Unpins the specified buffer.
 	* @param buff the buffer to be unpinned
 	*/
-	synchronized void unpin(AbstractBuffer buff)
+	protected synchronized void unpin(AbstractBuffer buff)
 	{
 		buff.unpin();
 		if (!buff.isPinned()) numAvailable++;

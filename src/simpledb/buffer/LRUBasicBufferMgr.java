@@ -4,6 +4,8 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import simpledb.file.Block;
 
@@ -13,7 +15,7 @@ import simpledb.file.Block;
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
-	protected SortedQueue<TimedBuffer> _availBufPool;
+	protected ArrayBlockingQueue<AbstractBuffer> _availBufPool;
 	protected HashMap<Block, AbstractBuffer> _allocatedBufMap;
 
 	/**
@@ -23,24 +25,38 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	{
 		super(numbuffs);
 		numAvailable = numbuffs;
-		_availBufPool = new SortedQueue<TimedBuffer>();
+		_availBufPool = new ArrayBlockingQueue<AbstractBuffer>(numbuffs);
 		_allocatedBufMap = new HashMap<Block, AbstractBuffer>(numbuffs);
-		for(int i = 0; i < numbuffs; i++)
-		{
-			TimedBuffer b = new TimedBuffer(_availBufPool, _allocatedBufMap);
-			_availBufPool.add(b);
-		}
+		for(int i = 0; i < numbuffs; i++) _availBufPool.add(new Buffer());
 		
 	}
 	
 	@Override
 	synchronized AbstractBuffer pin(Block blk)
 	{
-		AbstractBuffer buff = super.pin(blk);
+		AbstractBuffer buff = findExistingBuffer(blk);
+		if (buff == null) {
+			buff = chooseUnpinnedBuffer();
+		    if (buff == null) return null;
+		    _allocatedBufMap.remove(buff.block());
+			// _availBufPool.remove(buff); // not needed b/c poll called on choose unpinned buffer
+		    buff.assignToBlock(blk);
+		}
+		if (!buff.isPinned()) numAvailable--;
+		buff.pin();
 		_allocatedBufMap.put(blk, buff);
 		return buff;
 	}
 	
+	
+	@Override
+	protected synchronized void unpin(AbstractBuffer buff)
+	{
+		super.unpin(buff);
+		System.out.println(_availBufPool.size());
+		_availBufPool.add(buff);
+	}
+
 	@Override
 	synchronized AbstractBuffer pinNew(String filename, PageFormatter fmtr)
 	{
@@ -65,5 +81,6 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	void flushAll(int txnum)
 	{
       for (AbstractBuffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
+      for (AbstractBuffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
 }
