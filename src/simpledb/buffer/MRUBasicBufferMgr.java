@@ -103,4 +103,10 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
       for (Buffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
       for (Buffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "simpledb.buffer.MRUBasicBufferMgr@[allocatedMap="+_allocatedBufMap.toString()+", availableDeque=" + _availBufPool.toString()+"]";
+	}
 }
