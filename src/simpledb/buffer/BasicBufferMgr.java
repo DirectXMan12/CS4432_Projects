@@ -33,8 +33,7 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
    }
    
    /**
-    * Flushes the dirty buffers modified by the specified transaction.
-    * @param txnum the transaction's id number
+    * {@inheritDoc}
     */
    synchronized void flushAll(int txnum)
    {
@@ -43,6 +42,9 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
          buff.flush();
    }
    
+   /**
+    * {@inheritDoc}
+    */
    protected Buffer findExistingBuffer(Block blk) {
       for (Buffer buff : bufferpool) {
          Block b = buff.block();
@@ -52,6 +54,9 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
       return null;
    }
    
+   /**
+    * {@inheritDoc}
+    */
    protected Buffer chooseUnpinnedBuffer() {
       for (Buffer buff : bufferpool)
          if (!buff.isPinned())
@@ -59,7 +64,9 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
       return null;
    }
    
-   @Override
+   /**
+    * {@inheritDoc}
+    */
    public String toString()
    {
 	   return "{alg: \"basic\", totalpool: "+bufferpool+"}";
