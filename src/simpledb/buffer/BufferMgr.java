@@ -31,6 +31,11 @@ public class BufferMgr {
 	   _buffMgrType = cls;
    }
    
+   public int getIOCount()
+   {
+	   return bufferMgr.getIOCount();
+   }
+    
    int _numbuffers;
 
    public void resetBasicBufferMgr()

@@ -181,6 +181,9 @@ public class BufferMgrPerfomanceTests
 		long end1 = 0;
 		long end2 = 0;
 		long end3 = 0;
+		int io1 = 0;
+		int io2 = 0;
+		int io3 = 0;
 		
 		Random r = new Random();
 		init = new Date().getTime();
@@ -195,6 +198,7 @@ public class BufferMgrPerfomanceTests
 			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
 			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
 		}
+		io1 = SimpleDB.bufferMgr().getIOCount();
 		end1 = new Date().getTime();
 		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
 		SimpleDB.bufferMgr().resetBasicBufferMgr();
@@ -208,7 +212,9 @@ public class BufferMgrPerfomanceTests
 			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
 		}
 		
+		io2 = SimpleDB.bufferMgr().getIOCount();
 		end2 = new Date().getTime();
+		
 		
 		BufferMgr.setBasicBuffMgrType(MRUBasicBufferMgr.class);
 		SimpleDB.bufferMgr().resetBasicBufferMgr();
@@ -221,9 +227,10 @@ public class BufferMgrPerfomanceTests
 			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
 			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
 		}
+		io3 = SimpleDB.bufferMgr().getIOCount();
 		end3 = new Date().getTime();
 		
-		System.out.println("Basic: " + Long.toString(end1 - init) + " ms, LRU: " + Long.toString(end2 - end1) + " ms, MRU: " + Long.toString(end3 - end2) + " ms");
+		System.out.println("Basic: " + Long.toString(end1 - init) + " ms (" + io1 + " I/Os), LRU: " + Long.toString(end2 - end1) + " ms (" + io2 + " I/Os), MRU: " + Long.toString(end3 - end2) + " ms (" + io3 + " I/Os)");
 		
 	}
 

@@ -110,6 +110,7 @@ public class BasicSQLFunctionalityTest {
 	public void setupBefore() throws SQLException
 	{
 		if (stmt == null) stmt = mainConnection.createStatement();
+		stmt.executeUpdate("delete from STUDENT where SId = 10;");
 	}
 	
 	public String[][] getResultSetAsArray(ResultSet rs, String cols[], Class cls[]) throws SQLException
@@ -169,6 +170,11 @@ public class BasicSQLFunctionalityTest {
 		String[][] res3Str = getResultSetAsArray(res3, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
 		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10]]", stringArrayToString(res3Str));
 		//assertArrayEquals(new String[][] {{"1", "joe", "2004", "10"}, {"2", "amy", "2004", "20"}, {"3", "max", "2005", "10"}, {"4", "sue", "2005", "20"}, {"5", "bob", "2003", "30"}, {"6", "kim", "2001", "20"}, {"7", "art", "2004", "30"}, {"8", "pat", "2001", "20"}, {"9", "lee", "2004", "10"}}, res1Str);
+		
+		stmt.executeUpdate("insert into STUDENT(SId, SName, GradYear, MajorId) values (10, 'cheese', 2021, 10);");
+		ResultSet res4 = stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+		String[][] res4Str = getResultSetAsArray(res4, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
+		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10],[10,cheese,2021,10]]", stringArrayToString(res4Str));
 	}
 	
 	@Test
@@ -190,6 +196,11 @@ public class BasicSQLFunctionalityTest {
 		String[][] res3Str = getResultSetAsArray(res3, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
 		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10]]", stringArrayToString(res3Str));
 		//assertArrayEquals(new String[][] {{"1", "joe", "2004", "10"}, {"2", "amy", "2004", "20"}, {"3", "max", "2005", "10"}, {"4", "sue", "2005", "20"}, {"5", "bob", "2003", "30"}, {"6", "kim", "2001", "20"}, {"7", "art", "2004", "30"}, {"8", "pat", "2001", "20"}, {"9", "lee", "2004", "10"}}, res1Str);
+		
+		stmt.executeUpdate("insert into STUDENT(SId, SName, GradYear, MajorId) values (10, 'cheese', 2021, 10);");
+		ResultSet res4 = stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+		String[][] res4Str = getResultSetAsArray(res4, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
+		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10],[10,cheese,2021,10]]", stringArrayToString(res4Str));
 	}
 	
 	@Test
@@ -211,6 +222,17 @@ public class BasicSQLFunctionalityTest {
 		String[][] res3Str = getResultSetAsArray(res3, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
 		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10]]", stringArrayToString(res3Str));
 		//assertArrayEquals(new String[][] {{"1", "joe", "2004", "10"}, {"2", "amy", "2004", "20"}, {"3", "max", "2005", "10"}, {"4", "sue", "2005", "20"}, {"5", "bob", "2003", "30"}, {"6", "kim", "2001", "20"}, {"7", "art", "2004", "30"}, {"8", "pat", "2001", "20"}, {"9", "lee", "2004", "10"}}, res1Str);
+		
+		stmt.executeUpdate("insert into STUDENT(SId, SName, GradYear, MajorId) values (10, 'cheese', 2021, 10);");
+		ResultSet res4 = stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+		String[][] res4Str = getResultSetAsArray(res4, new String[] { "SId", "SName", "GradYear", "MajorId" }, new Class[] {Integer.class, String.class, Integer.class, Integer.class });
+		assertEquals("[[1,joe,2004,10],[2,amy,2004,20],[3,max,2005,10],[4,sue,2005,20],[5,bob,2003,30],[6,kim,2001,20],[7,art,2004,30],[8,pat,2001,20],[9,lee,2004,10],[10,cheese,2021,10]]", stringArrayToString(res4Str));
+	}
+	
+	@After
+	public void tearDownAfter() throws SQLException
+	{
+		//stmt.executeUpdate("delete from STUDENT where SId = 10;");
 	}
 
 	/**

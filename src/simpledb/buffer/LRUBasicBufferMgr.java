@@ -40,11 +40,13 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	synchronized Buffer pin(Block blk)
 	{
 		Buffer buff = findExistingBuffer(blk);
-		if (buff == null) {
+		if (buff == null)
+		{
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
 		    _allocatedBufMap.remove(buff.block());
 		    buff.assignToBlock(blk);
+		    _ioCount++;
 		}
 		if (!buff.isPinned())
 		{
