@@ -223,7 +223,7 @@ public class BufferMgrPerfomanceTests
 		}
 		end3 = new Date().getTime();
 		
-		System.out.println("Basic: " + Long.toString(end1 - init) + ", LRU: " + Long.toString(end2 - end1) + ", MRU: " + Long.toString(end3 - end2));
+		System.out.println("Basic: " + Long.toString(end1 - init) + " ms, LRU: " + Long.toString(end2 - end1) + " ms, MRU: " + Long.toString(end3 - end2) + " ms");
 		
 	}
 
