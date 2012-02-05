@@ -122,7 +122,7 @@ public class BufferMgrPerfomanceTests
 		}
 	}*/
 	
-	@Test
+	/*@Test
 	public void testStudentDBSortPerf() throws SQLException
 	{
 		BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
@@ -172,16 +172,60 @@ public class BufferMgrPerfomanceTests
 			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
 			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
 		}
-	}
+	}*/
 	
-/*	@Test
-	public void testPerf()
+	@Test
+	public void testPerf() throws SQLException
 	{
-		long init = new Date().getTime();
+		long init = 0;
 		long end1 = 0;
 		long end2 = 0;
+		long end3 = 0;
 		
-	}*/
+		Random r = new Random();
+		init = new Date().getTime();
+		BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+		for (int i = 1; i < 1000; i++)
+		{
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			int res = i % 3 + i % 2;//r.nextInt(3);
+			if (res == 0) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
+			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
+		}
+		end1 = new Date().getTime();
+		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+		for (int i = 1; i < 1000; i++)
+		{
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			int res = i % 3 + i % 2;//r.nextInt(3);
+			if (res == 0) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
+			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
+		}
+		
+		end2 = new Date().getTime();
+		
+		BufferMgr.setBasicBuffMgrType(MRUBasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+		for (int i = 1; i < 1000; i++)
+		{
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			int res = i % 3 + i % 2;//r.nextInt(3);
+			if (res == 0) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT;");
+			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT where GradYear = 2004;");
+			if (res == 2) stmt.executeQuery("SELECT SId, SName, GradYear, MajorId from STUDENT order by MajorId DESC;");
+		}
+		end3 = new Date().getTime();
+		
+		System.out.println("Basic: " + Long.toString(end1 - init) + ", LRU: " + Long.toString(end2 - end1) + ", MRU: " + Long.toString(end3 - end2));
+		
+	}
 
 	/**
 	 * @throws java.lang.Exception
