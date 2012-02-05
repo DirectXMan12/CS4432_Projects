@@ -160,4 +160,10 @@ public class BufferMgr {
    protected boolean waitingTooLong(long starttime) {
       return System.currentTimeMillis() - starttime > MAX_TIME;
    }
+   
+   @Override
+   public String toString()
+   {
+	   return "simpledb.buffer.BufferMgr@[basicClass="+_buffMgrType.toString()+", basicmgr=" + bufferMgr.toString()+"]";
+   }
 }

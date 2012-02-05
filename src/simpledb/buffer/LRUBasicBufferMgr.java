@@ -106,4 +106,10 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
       for (Buffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
       for (Buffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
+
+	@Override
+	public String toString()
+	{
+		return "simpledb.buffer.LRUBasicBufferMgr@[allocatedMap="+_allocatedBufMap.toString()+", availableQueue=" + _availBufPool.toString()+"]";
+	}
 }

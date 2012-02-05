@@ -94,5 +94,7 @@ public abstract class AbstractBasicBufferMgr
 	protected abstract Buffer findExistingBuffer(Block blk);
 	   
 	protected abstract Buffer chooseUnpinnedBuffer();	
+	
+	public abstract String toString();
 
 }

@@ -58,4 +58,10 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
          return buff;
       return null;
    }
+   
+   @Override
+   public String toString()
+   {
+	   return "simpledb.buffer.BasicBufferMgr@[bufferpool=" + bufferpool.toString() + "]";
+   }
 }

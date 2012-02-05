@@ -191,6 +191,8 @@ public class Buffer {
    
    public String toString()
    {
-	   return "simpledb.buffer.Buffer@[blk="+this.blk.toString()+"]";
+	   String blkVal = "null";
+	   if (this.blk != null) this.blk.toString();
+	   return "simpledb.buffer.Buffer@[blk="+blkVal+", pins=" + Integer.toString(pins) +"]";
    }
 }
