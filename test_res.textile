@@ -29,6 +29,9 @@ MRU decreases without the I/O count mechanisms), it is not much faster.  This ma
 buffer pages first, which is a deoptimization.  The increase in speed compared to basic, however, comes from the fact that it still keeps track
 of unused pages in a separate place, so there is no searching required to find pages.
 
+As for the differences in speed and I/Os among different numbers of buffers, clearly fewer buffers would cause increaded I/Os in LRU (as is evidenced for the # = 8),
+and most likely 200 buffer slots has too much of an overhead because of the sheer size of it.
+
 h1. Functionality Testing
 
 h2. Output
