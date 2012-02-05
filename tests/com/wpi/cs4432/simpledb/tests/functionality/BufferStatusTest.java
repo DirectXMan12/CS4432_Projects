@@ -157,7 +157,8 @@ public class BufferStatusTest {
 		System.out.println(buffMgr.toString());
 		stmt.executeQuery("select sid, sname from student;");
 		System.out.println(buffMgr.toString());
-		
+		stmt.executeQuery("select sid, sname from student where sid = 3");
+		System.out.println(buffMgr.toString());
 	}
 
 	/**

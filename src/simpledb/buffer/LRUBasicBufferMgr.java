@@ -48,7 +48,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		    if (buff == null) return null; // (if there's no unpinned, die)
 		    _allocatedBufMap.remove(buff.block()); // remove the old mapping
 		    buff.assignToBlock(blk); // assign the new block to the old buffer
-//		    _ioCount++; // increase the I/O count (slow!)
+		    _ioCount++; // increase the I/O count (slow!)
 		}
 		if (!buff.isPinned()) // if the buffer was from the available pool
 		{
