@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.wpi.cs4432.jeffnamias;
+package simpledb.application;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -31,17 +31,16 @@ public class SimpleDBConnect {
 		String url = "jdbc:simpledb://" + host;
 		String qry ="Create table test1" + 
 					"( a1 int," +
-					"( a2 int"+
-					")";
+					" a2 int"+
+					");";
 		Statement s=null;
 		try {
 			conn = d.connect(url, null);
 			s=conn.createStatement();
 			System.out.println("Create table: "+s.executeUpdate(qry));
-			qry="insert into test1(a1,a2) values (1,2)";
+			qry="insert into test1(a1, a2) values (432, 957);";
 			System.out.println("Insert table: "+s.executeUpdate(qry));
-			
-			qry="select a1,a2 from test1";
+			qry="select a1,a2 from test1;";
 			ResultSet rs=s.executeQuery(qry);
 			while(rs.next())
 			{
