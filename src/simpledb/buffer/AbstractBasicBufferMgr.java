@@ -12,6 +12,7 @@ import simpledb.file.Block;
 public abstract class AbstractBasicBufferMgr
 {
 	protected int numAvailable;
+	protected int _ioCount = 0;
 	
 	public AbstractBasicBufferMgr(int numbuffs)
 	{
@@ -40,6 +41,7 @@ public abstract class AbstractBasicBufferMgr
 			buff = chooseUnpinnedBuffer();
 		    if (buff == null) return null;
 		    buff.assignToBlock(blk);
+		    _ioCount++;
 		}
 		if (!buff.isPinned()) numAvailable--;
 		buff.pin();
@@ -82,6 +84,11 @@ public abstract class AbstractBasicBufferMgr
 	public int available()
 	{
 		return numAvailable;
+	}
+	
+	synchronized int getIOCount()
+	{
+		return _ioCount;
 	}
 	   
 	protected abstract Buffer findExistingBuffer(Block blk);

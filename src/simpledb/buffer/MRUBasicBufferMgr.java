@@ -42,6 +42,7 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		    if (buff == null) return null;
 		    _allocatedBufMap.remove(buff.block());
 		    buff.assignToBlock(blk);
+		    _ioCount++;
 		}
 		if (!buff.isPinned())
 		{
