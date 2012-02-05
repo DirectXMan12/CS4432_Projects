@@ -36,6 +36,7 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	synchronized Buffer pin(Block blk)
 	{
+		// for inline docs, see the LRU pin method -- this once works the same way
 		Buffer buff = findExistingBuffer(blk);
 		if (buff == null) {
 			buff = chooseUnpinnedBuffer();
@@ -60,7 +61,7 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		super.unpin(buff);
 		if(buff.pins < 1 /* && !_availBufPool.contains(buff) */)
 		{
-			_availBufPool.addFirst(buff);
+			_availBufPool.addFirst(buff); // adds to the head, not the tail like LRU
 		}
 	}
 
