@@ -6,6 +6,7 @@ package simpledb.buffer;
 import simpledb.file.Block;
 
 /**
+ * Abstract class for a buffer manager, which handles functions like pinning and allocating buffers.
  * @author directxman12
  *
  */
