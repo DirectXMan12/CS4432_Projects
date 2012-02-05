@@ -62,6 +62,6 @@ public class BasicBufferMgr extends AbstractBasicBufferMgr
    @Override
    public String toString()
    {
-	   return "simpledb.buffer.BasicBufferMgr@[bufferpool=" + bufferpool.toString() + "]";
+	   return "{alg: \"basic\", totalpool: "+bufferpool+"}";
    }
 }

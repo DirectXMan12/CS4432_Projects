@@ -4,6 +4,8 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -110,6 +112,25 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	public String toString()
 	{
-		return "simpledb.buffer.LRUBasicBufferMgr@[allocatedMap="+_allocatedBufMap.toString()+", availableQueue=" + _availBufPool.toString()+"]";
+		return "{alg: \"LRU\", allocated: "+toJSON(_allocatedBufMap)+", available: " + _availBufPool.toString()+"}";
+	}
+	
+	protected <V> String toJSON(HashMap<Block, V> m)
+	{
+		StringBuilder sb = new StringBuilder("{");
+		Set<Block> ks = m.keySet();
+		Iterator<Block> iter = ks.iterator();
+		
+		for (int i = 0; i < ks.size(); i++)
+		{
+			Block key = iter.next();
+			sb.append(key.toIDString());
+			sb.append(": ");
+			sb.append(m.get(key).toString());
+			if (i < ks.size() - 1) sb.append(",");
+		}
+		
+		sb.append("}");
+		return sb.toString();
 	}
 }

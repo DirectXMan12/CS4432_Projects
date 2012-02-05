@@ -44,7 +44,12 @@ public class Block {
    }
    
    public String toString() {
-      return "[file " + filename + ", block " + blknum + "]";
+      return "{file: \"" + filename + "\", block: \"" + blknum + "\"}";
+   }
+   
+   public String toIDString()
+   {
+	   return "\"{file:" + filename + ", block:" + blknum + "}\"";
    }
    
    public int hashCode() {

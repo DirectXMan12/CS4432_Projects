@@ -107,6 +107,6 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	public String toString()
 	{
-		return "simpledb.buffer.MRUBasicBufferMgr@[allocatedMap="+_allocatedBufMap.toString()+", availableDeque=" + _availBufPool.toString()+"]";
+		return "{alg: \"MRU\", allocated: "+_allocatedBufMap.toString()+", available: " + _availBufPool.toString()+"}";
 	}
 }

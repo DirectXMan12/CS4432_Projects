@@ -164,6 +164,6 @@ public class BufferMgr {
    @Override
    public String toString()
    {
-	   return "simpledb.buffer.BufferMgr@[basicClass="+_buffMgrType.toString()+", basicmgr=" + bufferMgr.toString()+"]";
+	   return "{basicClass: \""+_buffMgrType.toString()+"\", basicmgr: " + bufferMgr.toString()+"}";
    }
 }

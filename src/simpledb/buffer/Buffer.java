@@ -192,7 +192,7 @@ public class Buffer {
    public String toString()
    {
 	   String blkVal = "null";
-	   if (this.blk != null) this.blk.toString();
-	   return "simpledb.buffer.Buffer@[blk="+blkVal+", pins=" + Integer.toString(pins) +"]";
+	   if (this.blk != null) blkVal = this.blk.toString();
+	   return "{blk: "+blkVal+", pins: " + Integer.toString(pins) +"}";
    }
 }
