@@ -33,6 +33,9 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		
 	}
 	
+	/**
+	 * {@link #pin(Block) pin()}
+	 */
 	@Override
 	synchronized Buffer pin(Block blk)
 	{
