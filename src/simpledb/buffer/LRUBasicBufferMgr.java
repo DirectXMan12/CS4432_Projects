@@ -39,21 +39,21 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	synchronized Buffer pin(Block blk)
 	{
-		Buffer buff = findExistingBuffer(blk);
-		if (buff == null)
+		Buffer buff = findExistingBuffer(blk); // try to find if the block is in an existing buffer
+		if (buff == null) // if not ...
 		{
-			buff = chooseUnpinnedBuffer();
-		    if (buff == null) return null;
-		    _allocatedBufMap.remove(buff.block());
-		    buff.assignToBlock(blk);
-		    _ioCount++;
+			buff = chooseUnpinnedBuffer(); // grab an unpinned buffer
+		    if (buff == null) return null; // (if there's no unpinned, die)
+		    _allocatedBufMap.remove(buff.block()); // remove the old mapping
+		    buff.assignToBlock(blk); // assign the new block to the old buffer
+//		    _ioCount++; // increase the I/O count (slow!)
 		}
-		if (!buff.isPinned())
+		if (!buff.isPinned()) // if the buffer was from the available pool
 		{
-			_availBufPool.remove(buff);
+			_availBufPool.remove(buff); // remove it from said pool
 		}
-		buff.pin();
-		_allocatedBufMap.put(blk, buff);
+		buff.pin(); // pin it
+		_allocatedBufMap.put(blk, buff); // put the new mapping into the map
 		return buff;
 	}
 	
@@ -62,7 +62,7 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected synchronized void unpin(Buffer buff)
 	{
 		super.unpin(buff);
-		if(buff.pins < 1 /* && !_availBufPool.contains(buff) */)
+		if(buff.pins < 1) // add to the pool if there's nothing left using it
 		{
 			_availBufPool.add(buff);
 		}
@@ -80,17 +80,17 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	@Override
 	protected synchronized Buffer findExistingBuffer(Block blk)
 	{
-		return _allocatedBufMap.get(blk);
+		return _allocatedBufMap.get(blk); // yay hashes
 	}
 
 	@Override
 	protected synchronized Buffer chooseUnpinnedBuffer()
 	{
-		Buffer b = _availBufPool.poll();
-		if (_availBufPool.contains(b))
+		Buffer b = _availBufPool.poll(); // FIFO queue functionality -- gets the head
+		/*if (_availBufPool.contains(b))
 		{
 			System.out.println("WTF2!?!");
-		}
+		}*/
 		return b;
 	}
 	
