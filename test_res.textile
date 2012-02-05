@@ -2,9 +2,23 @@ h1. Performance Testing
 
 h2. Output
 
+h3. Num Buffers = 200
+
 * Basic: 3339 ms (20160 I/Os)
 * LRU: 2664 ms (21 I/Os)
 * MRU: 2939 ms (20160 I/Os)
+
+h3. Num Buffers = 16
+
+* Basic: 1500 ms (20160 I/Os)
+* LRU: 824 ms (86 I/Os)
+* MRU: 920 ms (20160 I/Os)
+
+h3. Num Buffers = 8 (default)
+
+* Basic: 1531 ms (20160 I/Os)
+* LRU: 904 ms (20152 I/Os)
+* MRU: 959 ms (20160 I/Os)
 
 h2. Analysis
 
