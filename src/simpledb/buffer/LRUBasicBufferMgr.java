@@ -137,6 +137,11 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		return "{alg: \"LRU\", allocated: "+toJSON(_allocatedBufMap)+", available: " + _availBufPool.toString()+"}";
 	}
 	
+	/**
+	 * Converts a HashMap to a suitable JSON string representation.
+	 * @param m the HashMap
+	 * @return JSON string representation
+	 */
 	protected <V> String toJSON(HashMap<Block, V> m)
 	{
 		StringBuilder sb = new StringBuilder("{");
