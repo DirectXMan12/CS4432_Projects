@@ -31,6 +31,21 @@ public class BufferMgr {
 	   _buffMgrType = cls;
    }
    
+   int _numbuffers;
+
+   public void resetBasicBufferMgr()
+   {
+	   if (_buffMgrType == null) _buffMgrType = LRUBasicBufferMgr.class;
+	   try
+	   {
+		   bufferMgr = (AbstractBasicBufferMgr) _buffMgrType.getConstructor(Integer.TYPE).newInstance(_numbuffers);
+	   }
+	   catch (Exception e)
+	   {
+		   throw new RuntimeException("Error instantiating the buffer manager");
+	   } 
+   }
+   
    /**
     * Creates a new buffer manager having the specified 
     * number of buffers.
@@ -46,6 +61,7 @@ public class BufferMgr {
     */
    public BufferMgr(int numbuffers)
    {
+	   _numbuffers = numbuffers;
 	   if (_buffMgrType == null) _buffMgrType = LRUBasicBufferMgr.class;
 	   try
 	   {

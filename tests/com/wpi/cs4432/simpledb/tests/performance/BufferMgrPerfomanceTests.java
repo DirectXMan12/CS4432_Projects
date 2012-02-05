@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import simpledb.buffer.BasicBufferMgr;
 import simpledb.buffer.BufferMgr;
 import simpledb.buffer.LRUBasicBufferMgr;
+import simpledb.buffer.MRUBasicBufferMgr;
 import simpledb.remote.RemoteDriver;
 import simpledb.remote.RemoteDriverImpl;
 import simpledb.remote.SimpleDriver;
@@ -122,10 +124,35 @@ public class BufferMgrPerfomanceTests
 	@Test
 	public void testStudentDBSortPerf() throws SQLException
 	{
+		BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+		
+		Random r = new Random();
 		for (int i = 1; i < 1000; i++)
 		{
-			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
-			stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			int res = r.nextInt(3);
+			if (res == 0) stmt.executeQuery("SELECT SId, SName from STUDENT;");
+			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear from STUDENT where GradYear = 2004;");
+			if (res == 2) stmt.executeQuery("SELECT SId, SName, MajorId from STUDENT order by MajorId DESC;");
+		}
+	}
+	
+	@Test
+	public void testStudentDBLRUSortPerf() throws SQLException
+	{
+		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+		Random r = new Random();
+		for (int i = 1; i < 1000; i++)
+		{
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by GradYear DESC;");
+			//stmt.executeQuery("SELECT SId, SName, MajorId, GradYear from STUDENT order by MajorId DESC;");
+			int res = r.nextInt(3);
+			if (res == 0) stmt.executeQuery("SELECT SId, SName from STUDENT;");
+			if (res == 1) stmt.executeQuery("SELECT SId, SName, GradYear from STUDENT where GradYear = 2004;");
+			if (res == 2) stmt.executeQuery("SELECT SId, SName, MajorId from STUDENT order by MajorId DESC;");
 		}
 	}
 
