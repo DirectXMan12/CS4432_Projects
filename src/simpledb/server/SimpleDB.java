@@ -21,7 +21,7 @@ import simpledb.planner.*;
  * @author Edward Sciore
  */
 public class SimpleDB {
-   public static int BUFFER_SIZE = 200; // was 8
+   public static int BUFFER_SIZE = 16; // was 8
    public static String LOG_FILE = "simpledb.log";
    
    private static FileMgr     fm;
