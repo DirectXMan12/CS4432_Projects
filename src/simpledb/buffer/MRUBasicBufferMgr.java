@@ -4,14 +4,14 @@
 package simpledb.buffer;
 
 import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import simpledb.file.Block;
 
 /**
+ * Basic Buffer Manager implementation that uses an MRU (Most Recently Used) algorithm to manage
+ * buffer usage.
  * @author jeffnamias
- *
  */
 public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
@@ -20,7 +20,8 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected int _queueSize;
 
 	/**
-	 * @param numbuffs
+	 * Creates an instance of a MRUBasicBufferMgr with a specified number of buffers. 
+	 * @param numbuffs the number of buffers
 	 */
 	public MRUBasicBufferMgr(int numbuffs)
 	{
@@ -33,6 +34,9 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		
 	}
 	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	synchronized Buffer pin(Block blk)
 	{
@@ -54,7 +58,9 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		return buff;
 	}
 	
-	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	protected synchronized void unpin(Buffer buff)
 	{
@@ -65,6 +71,9 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		}
 	}
 
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	synchronized Buffer pinNew(String filename, PageFormatter fmtr)
 	{
@@ -73,13 +82,19 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		_allocatedBufMap.put(buff.block(), buff);
 		return buff;
 	}
-	
+
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	protected synchronized Buffer findExistingBuffer(Block blk)
 	{
 		return _allocatedBufMap.get(blk);
 	}
-
+	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	protected synchronized Buffer chooseUnpinnedBuffer()
 	{
@@ -90,20 +105,29 @@ public class MRUBasicBufferMgr extends AbstractBasicBufferMgr
 		}
 		return b;
 	}
-	
+
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	public int available()
 	{
 		return _availBufPool.size();
 	}
 
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	void flushAll(int txnum)
 	{
       for (Buffer buff : _availBufPool) if (buff.isModifiedBy(txnum)) buff.flush();
       for (Buffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
-	
+
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	public String toString()
 	{

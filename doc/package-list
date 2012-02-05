@@ -1,3 +1,4 @@
+com.wpi.cs4432.simpledb.tests.functionality
 com.wpi.cs4432.simpledb.tests.performance
 simpledb.buffer
 simpledb.file

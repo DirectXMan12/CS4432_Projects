@@ -189,6 +189,10 @@ public class Buffer {
       return txnum == modifiedBy;
    }
    
+   /**
+    * Returns a string representation of the buffer.
+    * (TODO: Add sting format)
+    */
    public String toString()
    {
 	   String blkVal = "null";

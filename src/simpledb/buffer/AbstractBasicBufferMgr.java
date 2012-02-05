@@ -19,7 +19,7 @@ public abstract class AbstractBasicBufferMgr
 		numAvailable = numbuffs;
 	}
 	   
-	   /**
+	/**
 	* Flushes the dirty buffers modified by the specified transaction.
 	* @param txnum the transaction's id number
 	*/
@@ -86,15 +86,32 @@ public abstract class AbstractBasicBufferMgr
 		return numAvailable;
 	}
 	
+	/**
+	 * Returns the current number of IOs that have occured.
+	 * @return the current number of IOs that have occured.
+	 */
 	synchronized int getIOCount()
 	{
 		return _ioCount;
 	}
-	   
+	
+	/**
+	 * 
+	 * @param blk
+	 * @return
+	 */
 	protected abstract Buffer findExistingBuffer(Block blk);
-	   
+	
+	/**
+	 * Returns a buffer that is available for use (i.e. not pinned), or null if there are no 
+	 * unpinned buffers.
+	 * @return a buffer that is available for use, or null if none available.
+	 */
 	protected abstract Buffer chooseUnpinnedBuffer();	
 	
+	/**
+	 * A string representation of the Buffer.
+	 */
 	public abstract String toString();
 
 }

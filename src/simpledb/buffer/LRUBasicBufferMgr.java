@@ -12,8 +12,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import simpledb.file.Block;
 
 /**
+ * Basic Buffer Manager implementation that uses an LRU (Least Recently Used) algorithm to manage
+ * buffer usage.
  * @author directxman12
- *
  */
 public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 {
@@ -22,7 +23,8 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	protected int _queueSize;
 
 	/**
-	 * @param numbuffs
+	 * Creates an instance of a LRUBasicBufferMgr with a specified number of buffers. 
+	 * @param numbuffs the number of buffers
 	 */
 	public LRUBasicBufferMgr(int numbuffs)
 	{
@@ -36,8 +38,8 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 	}
 	
 	/**
-	 * {@link #pin(Block) pin()}
-	 */
+    * {@inheritDoc}
+    */
 	@Override
 	synchronized Buffer pin(Block blk)
 	{
@@ -59,7 +61,9 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		return buff;
 	}
 	
-	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	protected synchronized void unpin(Buffer buff)
 	{
@@ -69,7 +73,10 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 			_availBufPool.add(buff);
 		}
 	}
-
+	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	synchronized Buffer pinNew(String filename, PageFormatter fmtr)
 	{
@@ -79,12 +86,18 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		return buff;
 	}
 	
+	/**
+    * {@inheritDoc}
+    */	
 	@Override
 	protected synchronized Buffer findExistingBuffer(Block blk)
 	{
 		return _allocatedBufMap.get(blk); // yay hashes
 	}
 
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	protected synchronized Buffer chooseUnpinnedBuffer()
 	{
@@ -96,12 +109,18 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
 		return b;
 	}
 	
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	public int available()
 	{
 		return _availBufPool.size();
 	}
 
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	void flushAll(int txnum)
 	{
@@ -109,6 +128,9 @@ public class LRUBasicBufferMgr extends AbstractBasicBufferMgr
       for (Buffer buff : _allocatedBufMap.values()) if (buff.isModifiedBy(txnum)) buff.flush();
 	}
 
+	/**
+    * {@inheritDoc}
+    */
 	@Override
 	public String toString()
 	{

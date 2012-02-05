@@ -25,12 +25,22 @@ public class BufferMgr {
    
    protected static Class _buffMgrType;
    
+   /**
+    * Sets the class to use for the buffer manager. (Note: the parameter MUST be a subclass of
+    * AbstractBasicBufferMgr.)
+    * @param cls the buffer manager class
+    * @see AbstractBasicBufferMgr
+    */
    public static void setBasicBuffMgrType(Class cls)
    {
 	   if(!AbstractBasicBufferMgr.class.isAssignableFrom(cls)) throw new RuntimeException("BasicBufferManagers need to extend AbstractBasicBufferMgr!");
 	   _buffMgrType = cls;
    }
    
+   /**
+    * Returns the number of IOs that have occured.
+    * @return the number of IOs that have occured
+    */
    public int getIOCount()
    {
 	   return bufferMgr.getIOCount();
@@ -38,6 +48,9 @@ public class BufferMgr {
     
    int _numbuffers;
 
+   /**
+    * Creates and assigns a new instance of the buffer manager blahh blahh blahh (:?)
+    */
    public void resetBasicBufferMgr()
    {
 	   if (_buffMgrType == null) _buffMgrType = LRUBasicBufferMgr.class;
@@ -50,7 +63,7 @@ public class BufferMgr {
 		   throw new RuntimeException("Error instantiating the buffer manager");
 	   } 
    }
-   
+  
    /**
     * Creates a new buffer manager having the specified 
     * number of buffers.
@@ -157,10 +170,20 @@ public class BufferMgr {
       return bufferMgr.available();
    }
    
+   /**
+    * Returns true if the time elapsed from a specified starting time exceeds the max allowed time
+    * for waiting for a buffer.
+    * @param starttime the starting time
+    * @return true if waited too long for a buffer
+    */
    protected boolean waitingTooLong(long starttime) {
       return System.currentTimeMillis() - starttime > MAX_TIME;
    }
    
+   /**
+    * Returns a string representation of the buffer manager.
+    * (TODO: String format)
+    */
    @Override
    public String toString()
    {
