@@ -3,3 +3,6 @@
 *.*.swp
 *.swp
 bin
+docs
+javadoc
+javadocs
