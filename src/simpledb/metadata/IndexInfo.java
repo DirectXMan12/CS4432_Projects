@@ -12,6 +12,7 @@ import simpledb.tx.Transaction;
 import simpledb.parse.Lexer.IndexType;
 import simpledb.record.*;
 import simpledb.index.Index;
+import simpledb.index.btree.BTreeIndex;
 import simpledb.index.hash.HashIndex;
 
 
@@ -60,6 +61,8 @@ public class IndexInfo {
       {
       	case sh:
       		return new HashIndex(idxname, sch, tx);
+      	case bt:
+      		return new BTreeIndex(idxname, sch, tx);
       	default:
       		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
       }
@@ -86,6 +89,8 @@ public class IndexInfo {
       {
       	case sh:
       		return HashIndex.searchCost(numblocks, rpb);
+      	case bt:
+      		return BTreeIndex.searchCost(numblocks, rpb);
   		default:
       		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
       }
