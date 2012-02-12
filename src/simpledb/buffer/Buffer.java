@@ -191,7 +191,6 @@ public class Buffer {
    
    /**
     * Returns a string representation of the buffer.
-    * (TODO: Add sting format)
     */
    public String toString()
    {

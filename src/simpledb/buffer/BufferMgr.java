@@ -182,7 +182,6 @@ public class BufferMgr {
    
    /**
     * Returns a string representation of the buffer manager.
-    * (TODO: String format)
     */
    @Override
    public String toString()
