@@ -1,6 +1,8 @@
 package simpledb.parse;
 
 import java.util.*;
+
+import simpledb.parse.Lexer.IndexType;
 import simpledb.query.*;
 import simpledb.record.Schema;
 
@@ -233,13 +235,22 @@ public class Parser {
    
    public CreateIndexData createIndex() {
       lex.eatKeyword("index");
+      Lexer.IndexType indexType;
+      try
+      {
+    	  indexType = lex.eatIndexType();
+      }
+      catch (BadSyntaxException ex)
+      {
+    	  indexType = IndexType.sh;
+      }
       String idxname = lex.eatId();
       lex.eatKeyword("on");
       String tblname = lex.eatId();
       lex.eatDelim('(');
       String fldname = field();
       lex.eatDelim(')');
-      return new CreateIndexData(idxname, tblname, fldname);
+      return new CreateIndexData(idxname, tblname, fldname, indexType);
    }
 }
 

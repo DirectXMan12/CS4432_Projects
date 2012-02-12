@@ -9,6 +9,20 @@ import java.io.*;
  */
 public class Lexer {
    private Collection<String> keywords;
+   public static enum IndexType
+   {
+	   eh,
+	   bt,
+	   sh;
+	   
+	   public String toFullName()
+	   {
+		   if (this == eh) return "Extended Hash";
+		   if (this == bt) return "B+ Tree";
+		   if (this == sh) return "Static Hash (default)";
+		   return null;
+	   }
+   };
    private StreamTokenizer tok;
    
    /**
@@ -135,6 +149,28 @@ public class Lexer {
       String s = tok.sval;
       nextToken();
       return s;
+   }
+   
+   private boolean matchIndexType()
+   {
+	   if (tok.ttype != StreamTokenizer.TT_WORD) return false;
+	   try
+	   {
+		   IndexType.valueOf(tok.sval);
+	   }
+	   catch(IllegalArgumentException ex)
+	   {
+		   return false;
+	   }
+	   return true;
+   }
+   
+   public IndexType eatIndexType()
+   {
+	   if (!matchIndexType()) throw new BadSyntaxException();
+	   IndexType res = IndexType.valueOf(tok.sval);
+	   nextToken();
+	   return res;
    }
    
    private void nextToken() {
