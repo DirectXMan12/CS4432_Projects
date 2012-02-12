@@ -2,6 +2,8 @@ package simpledb.metadata;
 
 import static simpledb.metadata.TableMgr.MAX_NAME;
 import simpledb.tx.Transaction;
+import simpledb.parse.Lexer;
+import simpledb.parse.Lexer.IndexType;
 import simpledb.record.*;
 import java.util.*;
 
@@ -24,6 +26,7 @@ public class IndexMgr {
       if (isnew) {
          Schema sch = new Schema();
          sch.addStringField("indexname", MAX_NAME);
+         sch.addStringField("indextype", 2);
          sch.addStringField("tablename", MAX_NAME);
          sch.addStringField("fieldname", MAX_NAME);
          tblmgr.createTable("idxcat", sch, tx);
@@ -40,10 +43,11 @@ public class IndexMgr {
     * @param fldname the name of the indexed field
     * @param tx the calling transaction
     */
-   public void createIndex(String idxname, String tblname, String fldname, Transaction tx) {
+   public void createIndex(String idxname, Lexer.IndexType idxtype, String tblname, String fldname, Transaction tx) {
       RecordFile rf = new RecordFile(ti, tx);
       rf.insert();
       rf.setString("indexname", idxname);
+      rf.setString("indextype", idxtype.name());
       rf.setString("tablename", tblname);
       rf.setString("fieldname", fldname);
       rf.close();
@@ -62,8 +66,9 @@ public class IndexMgr {
       while (rf.next())
          if (rf.getString("tablename").equals(tblname)) {
          String idxname = rf.getString("indexname");
+         IndexType idxtype = IndexType.valueOf(rf.getString("indextype"));
          String fldname = rf.getString("fieldname");
-         IndexInfo ii = new IndexInfo(idxname, tblname, fldname, tx);
+         IndexInfo ii = new IndexInfo(idxname, idxtype, tblname, fldname, tx);
          result.put(fldname, ii);
       }
       rf.close();

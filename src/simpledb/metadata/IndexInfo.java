@@ -2,8 +2,14 @@ package simpledb.metadata;
 
 import static java.sql.Types.INTEGER;
 import static simpledb.file.Page.BLOCK_SIZE;
+
+import javax.naming.OperationNotSupportedException;
+
+import com.sun.org.apache.xml.internal.utils.UnImplNode;
+
 import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
+import simpledb.parse.Lexer.IndexType;
 import simpledb.record.*;
 import simpledb.index.Index;
 import simpledb.index.hash.HashIndex;
@@ -19,6 +25,7 @@ import simpledb.index.hash.HashIndex;
  */
 public class IndexInfo {
    private String idxname, fldname;
+   private IndexType idxtype;
    private Transaction tx;
    private TableInfo ti;
    private StatInfo si;
@@ -30,10 +37,11 @@ public class IndexInfo {
     * @param fldname the name of the indexed field
     * @param tx the calling transaction
     */
-   public IndexInfo(String idxname, String tblname, String fldname,
+   public IndexInfo(String idxname, IndexType idxtype, String tblname, String fldname,
                     Transaction tx) {
       this.idxname = idxname;
       this.fldname = fldname;
+      this.idxtype = idxtype;
       this.tx = tx;
       ti = SimpleDB.mdMgr().getTableInfo(tblname, tx);
       si = SimpleDB.mdMgr().getStatInfo(tblname, ti, tx);
@@ -43,10 +51,18 @@ public class IndexInfo {
     * Opens the index described by this object.
     * @return the Index object associated with this information
     */
-   public Index open() {
+   public Index open()
+   {
       Schema sch = schema();
       // Create new HashIndex for hash indexing
-      return new HashIndex(idxname, sch, tx);
+      // TODO: implement other index types
+      switch (idxtype)
+      {
+      	case sh:
+      		return new HashIndex(idxname, sch, tx);
+      	default:
+      		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
+      }
    }
    
    /**
@@ -65,7 +81,14 @@ public class IndexInfo {
       int rpb = BLOCK_SIZE / idxti.recordLength();
       int numblocks = si.recordsOutput() / rpb;
       // Call HashIndex.searchCost for hash indexing
-      return HashIndex.searchCost(numblocks, rpb);
+      // TODO: implement other index types
+      switch(idxtype)
+      {
+      	case sh:
+      		return HashIndex.searchCost(numblocks, rpb);
+  		default:
+      		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
+      }
    }
    
    /**

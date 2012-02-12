@@ -1,6 +1,7 @@
 package simpledb.metadata;
 
 import simpledb.tx.Transaction;
+import simpledb.parse.Lexer;
 import simpledb.record.*;
 import java.util.Map;
 
@@ -33,8 +34,8 @@ public class MetadataMgr {
       return viewmgr.getViewDef(viewname, tx);
    }
    
-   public void createIndex(String idxname, String tblname, String fldname, Transaction tx) {
-      idxmgr.createIndex(idxname, tblname, fldname, tx);
+   public void createIndex(String idxname, Lexer.IndexType idxtype, String tblname, String fldname, Transaction tx) {
+      idxmgr.createIndex(idxname, idxtype, tblname, fldname, tx);
    }
    
    public Map<String,IndexInfo> getIndexInfo(String tblname, Transaction tx) {
