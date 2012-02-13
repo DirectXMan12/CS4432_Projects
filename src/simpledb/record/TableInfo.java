@@ -13,6 +13,7 @@ public class TableInfo {
    private Map<String,Integer> offsets;
    private int recordlen;
    private String tblname;
+   private boolean sorted;
    
    /**
     * Creates a TableInfo object, given a table name
@@ -84,6 +85,28 @@ public class TableInfo {
     */
    public int recordLength() {
       return recordlen;
+   }
+   
+   /**
+    * Set sorted flag to true, meaning the table is sorted
+    */
+   public void setSortedTrue(){
+	   sorted=true;
+   }
+   
+   /**
+    * Set sorted flag to false, meaning the table may not be sorted
+    */
+   public void setSortedFalse(){
+	   sorted=false;
+   }
+   
+   /**
+    * Returns the sorted flag (table is sorted if true, may not be if false)
+    * @return the sorted flag
+    */
+   public boolean getSorted(){
+	   return sorted;
    }
    
    private int lengthInBytes(String fldname) {
