@@ -10,9 +10,7 @@ import simpledb.remote.SimpleDriver;
 
 public class CreateTestTables 
 {
-	final static int maxSize=20000;
-	
-	public void createTestTables(int numEntries, Connection conn)
+	public static void createTestTables(int numEntries, Connection conn)
 	{
 		Random rand = null;
 		Statement s = null;
@@ -34,22 +32,19 @@ public class CreateTestTables
 				if(i!=5)
 				{
 					rand=new Random(1);// ensure every table gets the same data
-					for(int j=0;j<maxSize;j++)
+					for(int j=0;j<numEntries;j++)
 					{
 						s.executeUpdate("insert into test"+i+" (a1,a2) values("+rand.nextInt(1000)+","+rand.nextInt(1000)+ ")");
 					}
 				}
 				else//case where i=5
 				{
-					for(int j=0;j<maxSize/2;j++)// insert 10000(half the size) records into test5
+					for(int j=0;j<numEntries/2;j++)// insert 10000(half the size) records into test5
 					{
 						s.executeUpdate("insert into test"+i+" (a1,a2) values("+j+","+j+ ")");
 					}
 				}
 		   }
-		
-		   conn.close();
-		
 		} 
 		catch (SQLException e)
 		{
