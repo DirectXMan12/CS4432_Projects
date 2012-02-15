@@ -1,8 +1,9 @@
 package simpledb.materialize;
 
 //import simpledb.record.RID;
-import simpledb.query.*;
-import java.util.*;
+import java.util.List;
+
+import simpledb.query.Scan;
 
 /**
  * The Scan class for the <i>sort</i> operator.

@@ -13,7 +13,7 @@ import simpledb.server.SimpleDB;
 
 public class CreateTestTables 
 {
-	public static void createTestTables(int numEntries, Connection conn)
+	public static void createTestTables(int numEntries, Connection conn, boolean addRecords)
 	{
 		Random rand = null;
 		Statement s = null;
@@ -21,20 +21,26 @@ public class CreateTestTables
 		{
 			s=conn.createStatement();
 			
-			for (int i = 1; i < 6; i++) s.executeUpdate("Create table test"+i+" (a"+i+"1 int, a"+i+"2 int)");
+			if (!addRecords) for (int i = 1; i < 6; i++) s.executeUpdate("Create table test"+i+" (a"+i+"1 int, a"+i+"2 int)");
 			
 			BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
 			SimpleDB.bufferMgr().resetBasicBufferMgr();
-		
-			s.executeUpdate("create sh index idx1 on test1 (a11)");
-			//s.executeUpdate("create eh index idx2 on test2 (a21)");
-			s.executeUpdate("create bt index idx3 on test3 (a31)");
+			
+			if (!addRecords)
+			{
+				s.executeUpdate("create sh index idx1 on test1 (a11)");
+				//s.executeUpdate("create eh index idx2 on test2 (a21)");
+				s.executeUpdate("create bt index idx3 on test3 (a31)");
+			}
+			
+			Random randomSeed = new Random();
+			int seed = randomSeed.nextInt(20000);
 		
 			for(int i=1;i<6;i++)
 			{
 				/*if(i!=5)
 				{*/
-					rand=new Random(1);// ensure every table gets the same data
+					rand=new Random(seed);// ensure every table gets the same data
 					System.out.println("creating table "+i);
 					for (int k = 0; k < 100; k++)
 					{
