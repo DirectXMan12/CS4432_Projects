@@ -92,7 +92,7 @@ public class SimpleDBBaseTest
 		}
 		catch(SQLException ex)
 		{
-			CreateTestTables.createTestTables(20000, mainConnection);
+			CreateTestTables.createTestTables(5000, mainConnection);
 		}
 	}
 	
