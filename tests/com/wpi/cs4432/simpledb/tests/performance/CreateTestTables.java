@@ -1,11 +1,14 @@
 package com.wpi.cs4432.simpledb.tests.performance;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
-import simpledb.remote.SimpleDriver;
+
+import simpledb.buffer.BasicBufferMgr;
+import simpledb.buffer.BufferMgr;
+import simpledb.buffer.LRUBasicBufferMgr;
+import simpledb.server.SimpleDB;
 
 
 public class CreateTestTables 
@@ -17,14 +20,14 @@ public class CreateTestTables
 		try
 		{
 			s=conn.createStatement();
-			s.executeUpdate("Create table test1 (a11 int, a12 int)");
-			s.executeUpdate("Create table test2 (a21 int, a22 int)");
-			s.executeUpdate("Create table test3 (a31 int, a32 int)");
-			s.executeUpdate("Create table test4 (a41 int, a42 int)");
-			s.executeUpdate("Create table test5 (a51 int, a52 int)");
+			
+			for (int i = 1; i < 6; i++) s.executeUpdate("Create table test"+i+" (a"+i+"1 int, a"+i+"2 int)");
+			
+			BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
+			SimpleDB.bufferMgr().resetBasicBufferMgr();
 		
 			s.executeUpdate("create sh index idx1 on test1 (a11)");
-			//s.executeUpdate("create ex index idx2 on test2 (a21)");
+			//s.executeUpdate("create eh index idx2 on test2 (a21)");
 			s.executeUpdate("create bt index idx3 on test3 (a31)");
 		
 			for(int i=1;i<6;i++)
@@ -32,9 +35,14 @@ public class CreateTestTables
 				/*if(i!=5)
 				{*/
 					rand=new Random(1);// ensure every table gets the same data
-					for(int j=0;j<numEntries;j++)
+					System.out.println("creating table "+i);
+					for (int k = 0; k < 100; k++)
 					{
-						s.executeUpdate("insert into test"+i+" (a"+i+"1,a"+i+"2) values("+rand.nextInt(1000)+","+rand.nextInt(1000)+ ")");
+						for(int j=0;j<numEntries/100;j++)
+						{
+							s.executeUpdate("insert into test"+i+"(a"+i+"1,a"+i+"2) values("+rand.nextInt(1000)+","+rand.nextInt(1000)+ ");");
+						}
+						System.out.println("created up through row "+(k+1)*numEntries/100);
 					}
 				//}
 				/*else//case where i=5
@@ -51,6 +59,8 @@ public class CreateTestTables
 			System.out.println("Issue creating test tables:");
 			e.printStackTrace();
 		}
+		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
 	}
 }
 

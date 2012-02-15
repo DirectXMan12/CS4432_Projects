@@ -48,7 +48,7 @@ public class Transaction {
       recoveryMgr.commit();
       concurMgr.release();
       myBuffers.unpinAll();
-      System.out.println("transaction " + txnum + " committed");
+      //System.out.println("transaction " + txnum + " committed");
    }
    
    /**
@@ -200,7 +200,7 @@ public class Transaction {
    
    private static synchronized int nextTxNumber() {
       nextTxNum++;
-      System.out.println("new transaction: " + nextTxNum);
+      //System.out.println("new transaction: " + nextTxNum);
       return nextTxNum;
    }
 }
