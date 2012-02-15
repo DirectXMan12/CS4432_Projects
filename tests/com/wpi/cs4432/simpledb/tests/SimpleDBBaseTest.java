@@ -87,7 +87,7 @@ public class SimpleDBBaseTest
 		Statement stmt = mainConnection.createStatement();
 		try
 		{
-			stmt.executeQuery("select a1 from test5;");
+			stmt.executeQuery("select a51 from test5;");
 		}
 		catch(SQLException ex)
 		{
