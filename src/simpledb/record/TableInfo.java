@@ -13,7 +13,7 @@ public class TableInfo {
    private Map<String,Integer> offsets;
    private int recordlen;
    private String tblname;
-   private boolean sorted;
+   private boolean sorted = false;
    
    /**
     * Creates a TableInfo object, given a table name
