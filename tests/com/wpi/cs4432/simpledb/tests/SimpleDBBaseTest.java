@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import simpledb.buffer.BasicBufferMgr;
 import simpledb.buffer.BufferMgr;
 import simpledb.buffer.LRUBasicBufferMgr;
 import simpledb.remote.RemoteDriver;
@@ -49,7 +50,7 @@ public class SimpleDBBaseTest
 			public void run() {
 				try
 				{
-					BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
+					BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
 					// configure and initialize the database
 					SimpleDB.init("studentdb");
 					System.out.println("finished init of SimpleDB");
