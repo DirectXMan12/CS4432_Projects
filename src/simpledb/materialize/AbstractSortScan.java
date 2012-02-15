@@ -15,10 +15,12 @@ import java.util.*;
  *
  */
 public abstract class AbstractSortScan implements Scan {
-   private UpdateScan s1, s2=null, currentscan=null;
+   protected UpdateScan s1;
+protected UpdateScan s2=null;
+private UpdateScan currentscan=null;
    private RecordComparator comp;
    private boolean hasmore1, hasmore2=false;
-   private List<RID> savedposition;
+   protected List<RID> savedposition;
    
    /**
     * Creates a sort scan, given a list of 1 or 2 runs.
