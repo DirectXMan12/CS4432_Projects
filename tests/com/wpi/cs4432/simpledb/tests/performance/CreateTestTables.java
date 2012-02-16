@@ -28,9 +28,7 @@ public class CreateTestTables
 			
 			if (!addRecords)
 			{
-				s.executeUpdate("create sh index idx1 on test1 (a11)");
-				//s.executeUpdate("create eh index idx2 on test2 (a21)");
-				s.executeUpdate("create bt index idx3 on test3 (a31)");
+				//createIndicies(s);
 			}
 			
 			Random randomSeed = new Random();
@@ -58,6 +56,45 @@ public class CreateTestTables
 						s.executeUpdate("insert into test"+i+" (a51,a52) values("+j+","+j+ ")");
 					}
 				}*/
+		   }
+		} 
+		catch (SQLException e)
+		{
+			System.out.println("Issue creating test tables:");
+			e.printStackTrace();
+		}
+		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
+	}
+
+	public static void createIndicies(Statement s) throws SQLException
+	{
+		s.executeUpdate("create sh index idx1 on test1 (a11)");
+		//s.executeUpdate("create eh index idx2 on test2 (a21)");
+		s.executeUpdate("create bt index idx3 on test3 (a31)");
+	}
+	
+	public static void addNRows(int numEntries, Connection conn)
+	{
+		Random rand = null;
+		Statement s = null;
+		try
+		{
+			s=conn.createStatement();
+			
+			BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
+			SimpleDB.bufferMgr().resetBasicBufferMgr();
+			
+			Random randomSeed = new Random();
+			int seed = randomSeed.nextInt(20000);
+		
+			for(int i=1;i<6;i++)
+			{
+				rand=new Random(seed);// ensure every table gets the same data
+				for(int j=0;j<numEntries;j++)
+				{
+					s.executeUpdate("insert into test"+i+"(a"+i+"1,a"+i+"2) values("+rand.nextInt(1000)+","+rand.nextInt(1000)+ ");");
+				}
 		   }
 		} 
 		catch (SQLException e)

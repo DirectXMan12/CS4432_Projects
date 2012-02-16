@@ -60,19 +60,19 @@ public class IndexPerformanceTests extends SimpleDBBaseTest
 	@Test
 	public void testSimpleHashSelectPerf() throws SQLException
 	{
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a11, a12 from test1 where a12 = "+randVal+";");
+		for (int i = 0; i < 50; i++) stmt.executeQuery("select a11, a12 from test1 where a11 = "+randVal+";");
 	}
 	
 	@Test
 	public void testNoIndexSelectPerf() throws SQLException
 	{
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a41, a42 from test4 where a42 = "+randVal+";");
+		for (int i = 0; i < 50; i++) stmt.executeQuery("select a41, a42 from test4 where a41 = "+randVal+";");
 	}
 	
 	@Test
 	public void testBPlusTreeSelectPerf() throws SQLException
 	{
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a31, a32 from test3 where a32 = "+randVal+";");
+		for (int i = 0; i < 50; i++) stmt.executeQuery("select a31, a32 from test3 where a31 = "+randVal+";");
 	}
 	
 	@Test
