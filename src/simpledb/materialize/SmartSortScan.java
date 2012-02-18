@@ -4,7 +4,7 @@ import java.util.List;
 
 import simpledb.query.Scan;
 import simpledb.query.UpdateScan;
-import simpledb.record.RID;
+//import simpledb.record.RID;
 import simpledb.record.RecordFile;
 import simpledb.record.Schema;
 import simpledb.tx.Transaction;
@@ -18,19 +18,14 @@ import simpledb.tx.Transaction;
  *
  */
 
-public class SmartSortScan extends AbstractSortScan implements Scan
+public class SmartSortScan extends AbstractSortScan
 {
 	protected RecordFile _rf;
 	protected TempTable _tmpTable;
 	protected UpdateScan _scn;
 	protected Schema _schema;
 	
-	// TODO: step 1: find Delorean
-	// 		 step 2: go back in time and "deal with" author
-	// 		 step 3: write a coherent, modular database system for him
-	// 		 step 4: return to present
-	// 		 step 5: actually do database programming
-	   /**
+	/**
 	* {@inheritDoc}
 	*/
 	public SmartSortScan(List<TempTable> runs, RecordComparator comp, RecordFile rf, Transaction tx)
@@ -81,6 +76,7 @@ public class SmartSortScan extends AbstractSortScan implements Scan
 				else _rf.setString(colName, v.toString());
 			}
 		}
+		_rf.setSorted(true);
 		super.close();
 	}
 }

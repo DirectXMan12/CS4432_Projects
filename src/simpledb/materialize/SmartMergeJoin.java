@@ -16,13 +16,13 @@ import simpledb.tx.Transaction;
  * @author directxman12
  *
  */
-public class SmartSortPlan extends SortPlan
+public class SmartMergeJoin extends SortPlan
 {
 
 	protected TableInfo tblInfo;
 	protected RecordFile _rf;
 	
-	public SmartSortPlan(Plan p, List<String> sortfields, Transaction tx, String tblname)
+	public SmartMergeJoin(Plan p, List<String> sortfields, Transaction tx, String tblname)
 	{
 		super(p, sortfields, tx);
 		tblInfo = SimpleDB.mdMgr().getTableInfo(tblname, tx);
@@ -32,6 +32,9 @@ public class SmartSortPlan extends SortPlan
 	@Override
 	public Scan open()
 	{
+		if(tblInfo.getSorted()==true){
+			return _rf.getNewScan();
+		}
 		Scan src = p.open();
 		List<TempTable> runs = splitIntoRuns(src);
 		src.close();

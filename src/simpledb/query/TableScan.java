@@ -81,22 +81,27 @@ public class TableScan implements UpdateScan {
          rf.setInt(fldname, (Integer)val.asJavaVal());
       else
          rf.setString(fldname, (String)val.asJavaVal());
+      rf.setSorted(false);
    }
    
    public void setInt(String fldname, int val) {
       rf.setInt(fldname, val);
+      rf.setSorted(false);
    }
    
    public void setString(String fldname, String val) {
       rf.setString(fldname, val);
+      rf.setSorted(false);
    }
    
    public void delete() {
       rf.delete();
+      rf.setSorted(false);
    }
    
    public void insert() {
       rf.insert();
+      rf.setSorted(false);
    }
    
    public RID getRid() {

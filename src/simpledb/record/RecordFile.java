@@ -1,6 +1,7 @@
 package simpledb.record;
 
 import simpledb.file.Block;
+import simpledb.query.TableScan;
 import simpledb.tx.Transaction;
 
 /**
@@ -102,6 +103,27 @@ public class RecordFile {
    }
    
    /**
+    * Returns whether the table is sorted
+    * @return boolean of sorted state
+    */
+   public boolean getSorted(){
+	   return ti.getSorted();
+   }
+   
+   /**
+    * 
+    * @param state The boolean with which we would like to set the sorted flag
+    */
+   public void setSorted(boolean state){
+	   if(state){
+		   ti.setSortedTrue();
+	   }
+	   else{
+		   ti.setSortedFalse();
+	   }
+   }
+   
+   /**
     * Deletes the current record.
     * The client must call next() to move to
     * the next record.
@@ -125,6 +147,15 @@ public class RecordFile {
          moveTo(currentblknum + 1);
       }
    }
+   
+   /**
+    * Returns a new TableScan of this RecordFile
+    * @return TableScan of this RecordFile
+    */
+   public TableScan getNewScan(){
+	   return new TableScan(ti, tx);
+   }
+   
    
    /**
     * Positions the current record as indicated by the

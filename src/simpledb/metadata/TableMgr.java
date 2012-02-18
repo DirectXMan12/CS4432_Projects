@@ -33,6 +33,7 @@ public class TableMgr {
       Schema tcatSchema = new Schema();
       tcatSchema.addStringField("tblname", MAX_NAME);
       tcatSchema.addIntField("reclength");
+      tcatSchema.addStringField("sorted", MAX_NAME);
       tcatInfo = new TableInfo("tblcat", tcatSchema);
       
       Schema fcatSchema = new Schema();
@@ -62,6 +63,7 @@ public class TableMgr {
       tcatfile.insert();
       tcatfile.setString("tblname", tblname);
       tcatfile.setInt("reclength", ti.recordLength());
+      tcatfile.setString("sorted", Boolean.toString(ti.getSorted()));
       tcatfile.close();
       
       // insert a record into fldcat for each field
@@ -87,6 +89,7 @@ public class TableMgr {
    public TableInfo getTableInfo(String tblname, Transaction tx) {
       RecordFile tcatfile = new RecordFile(tcatInfo, tx);
       int reclen = -1;
+      boolean sorted = false;
       while (tcatfile.next())
          if(tcatfile.getString("tblname").equals(tblname)) {
          reclen = tcatfile.getInt("reclength");
@@ -107,6 +110,10 @@ public class TableMgr {
          sch.addField(fldname, fldtype, fldlen);
       }
       fcatfile.close();
-      return new TableInfo(tblname, sch, offsets, reclen);
+      TableInfo temp = new TableInfo(tblname, sch, offsets, reclen);
+      if(tcatInfo.getSorted()==true){
+    	  temp.setSortedTrue();
+      }
+      return temp;
    }
 }
