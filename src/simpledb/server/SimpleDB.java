@@ -103,7 +103,7 @@ public class SimpleDB {
     * @return the system's planner for SQL commands
     */
    public static Planner planner() {
-      QueryPlanner  qplanner = new ExploitSortQueryPlanner(); //new BasicQueryPlanner();
+      QueryPlanner  qplanner = new BasicQueryPlanner();//ExploitSortQueryPlanner(); //new BasicQueryPlanner();
       UpdatePlanner uplanner = new IndexUpdatePlanner(); //old: new BasicUpdatePlanner();
       return new Planner(qplanner, uplanner);
    }
