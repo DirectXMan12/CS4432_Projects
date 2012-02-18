@@ -12,10 +12,11 @@ import org.junit.Test;
 import org.junit.rules.MethodRule;
 
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
-import com.carrotsearch.junitbenchmarks.annotation.AxisRange;
-import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
+import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
+import com.carrotsearch.junitbenchmarks.annotation.AxisRange;
 import com.wpi.cs4432.simpledb.tests.SimpleDBBaseTest;
+import java.sql.SQLException;
 
 /**
  * @author directxman12

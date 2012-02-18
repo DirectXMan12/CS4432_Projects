@@ -52,15 +52,20 @@ public class ExtHashIndex implements Index
 		RECORD_LEN = ti.recordLength();
 		BUCKET_SIZE = BLOCK_SIZE/RECORD_LEN;
 		
-		index_resolution = 1; // TODO: load resolution num buckets
-		NUM_BUCKETS = (int) Math.pow(2, index_resolution);
-		bucket_map = new String[NUM_BUCKETS];
-		
 		dir_sch = new Schema();
 		dir_sch.addStringField("bnum", Integer.SIZE*8);
 		dir_sch.addIntField("recnum");
+		dir_sch.addIntField("res");
 		dir_ti = new TableInfo(idxname+"dir", dir_sch);
 		dir_ts = new TableScan(ti, tx);
+		
+		index_resolution = 1; 
+		NUM_BUCKETS = (int) Math.pow(2, index_resolution);
+		bucket_map = new String[NUM_BUCKETS];
+		int currMax = index_resolution;
+		dir_ts.beforeFirst();
+		while(dir_ts.next()) if (currMax < dir_ts.getInt("res")) currMax = dir_ts.getInt("res");
+		index_resolution = currMax;
 	}
 	
 	/**
@@ -199,6 +204,13 @@ public class ExtHashIndex implements Index
 	{
 		return String.format("%0"+index_resolution+"d", virt_key_spot);
 	}
+	
+	protected boolean bucketIsMaxRes(String act_key)
+	{
+		dir_ts.beforeFirst();
+		while(dir_ts.next()) if(dir_ts.getString("bnum").equals(act_key)) break;
+		return dir_ts.getInt("res") >= index_resolution;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -208,10 +220,17 @@ public class ExtHashIndex implements Index
 		if(bucketIsFull(calc_act_key(ext_dataval)))
 		{
 			int old_virt_key = calc_virt_key(ext_dataval);
-			expand();
-			int virt_key_spot = calc_virt_key(ext_dataval);
-			bucket_map[2*old_virt_key+1] = getTblSuffix(virt_key_spot);
-			recalc_buckets(virt_key_spot);
+			if (!bucketIsMaxRes(calc_act_key(ext_dataval)))
+			{
+				bucket_map[old_virt_key+1] = getTblSuffix(old_virt_key+1);
+				recalc_buckets(old_virt_key);
+			}
+			else
+			{
+				expand();
+				bucket_map[2*old_virt_key+1] = getTblSuffix(2*old_virt_key+1);
+				recalc_buckets(2*old_virt_key);
+			}
 		}
 		beforeFirst(ext_dataval);
 		
@@ -220,7 +239,6 @@ public class ExtHashIndex implements Index
 		ts.setInt("id", ext_datarid.id());
 		ts.setVal("dataval", ext_dataval);
 		incrementBucketRecords(1, calc_act_key(ext_dataval));
-		
 	}
 
 	/**
