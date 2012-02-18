@@ -1,4 +1,4 @@
-package com.wpi.cs4432.simpledb.tests.performance;
+package com.wpi.cs4432.simpledb.tests;
 
 import java.sql.Connection;
 import java.sql.SQLException;

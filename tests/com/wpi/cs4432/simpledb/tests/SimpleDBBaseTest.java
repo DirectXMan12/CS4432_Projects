@@ -19,7 +19,6 @@ import simpledb.remote.RemoteDriverImpl;
 import simpledb.remote.SimpleDriver;
 import simpledb.server.SimpleDB;
 
-import com.wpi.cs4432.simpledb.tests.performance.CreateTestTables;
 
 public class SimpleDBBaseTest
 {
