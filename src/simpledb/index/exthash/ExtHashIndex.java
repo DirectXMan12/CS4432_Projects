@@ -200,15 +200,20 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * Used to find the identifier for a bucket
 	 * @param virt_key_spot
-	 * @return
+	 * @return the identifier of a bucket
 	 */
 	protected String getTblSuffix(int virt_key_spot)
 	{
 		return String.format("%0"+index_resolution+"d", virt_key_spot);
 	}
 	
+	/**
+	 * Is used to determine if the bucket resolution can be increase
+	 * @param act_key
+	 * @return true if the bucket is at max resolution or false otherwise
+	 */
 	protected boolean bucketIsMaxRes(String act_key)
 	{
 		dir_ts.beforeFirst();
@@ -246,7 +251,8 @@ public class ExtHashIndex implements Index
 	}
 
 	/**
-	 * 
+	 * Recalculates the keys that show where buckets
+	 * are in the index
 	 * @param virt_key_spot
 	 */
 	protected void recalc_buckets(int virt_key_spot)
