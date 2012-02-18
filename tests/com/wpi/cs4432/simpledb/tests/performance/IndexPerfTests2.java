@@ -26,26 +26,26 @@ public class IndexPerfTests2 extends SimpleDBBaseTest
 		long start, sel_sh, sel_none, sel_eh, sel_bt, join_sh, join_none, join_bt, join_eh = 0;
 		start = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a11, a12 from test1 where a11 = "+randVal+";");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a11, a12 from test1 where a11 = "+randVal+";");
 		sel_sh = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a41, a42 from test4 where a41 = "+randVal+";");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a41, a42 from test4 where a41 = "+randVal+";");
 		sel_none = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a31, a32 from test3 where a31 = "+randVal+";");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a31, a32 from test3 where a31 = "+randVal+";");
 		sel_bt = new Date().getTime();
 		
 		sel_eh = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a41, a42, a51, a52 from test4, test5 where a41 = a51;");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a41, a42, a51, a52 from test4, test5 where a41 = a51;");
 		join_none = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a11, a12, a51, a52 from test1, test5 where a11 = a51;");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a11, a12, a51, a52 from test1, test5 where a11 = a51;");
 		join_sh = new Date().getTime();
 		
 		join_eh = new Date().getTime();
 		
-		for (int i = 0; i < 50; i++) stmt.executeQuery("select a31, a32, a51, a52 from test3, test5 where a31 = a51;");
+		for (int i = 0; i < 100; i++) stmt.executeQuery("select a31, a32, a51, a52 from test3, test5 where a31 = a51;");
 		join_bt = new Date().getTime();
 
 		long[] sel_times = new long[] { sel_sh-start, sel_none-sel_sh, sel_bt-sel_none, sel_eh-sel_bt };
