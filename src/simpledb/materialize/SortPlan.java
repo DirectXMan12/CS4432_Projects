@@ -11,10 +11,10 @@ import java.util.*;
  * @author Edward Sciore
  */
 public class SortPlan implements Plan {
-   private Plan p;
-   private Transaction tx;
-   private Schema sch;
-   private RecordComparator comp;
+   protected Plan p;
+   protected Transaction tx;
+   protected Schema sch;
+   protected RecordComparator comp;
    
    /**
     * Creates a sort plan for the specified query.
@@ -87,7 +87,7 @@ public class SortPlan implements Plan {
       return sch;
    }
    
-   private List<TempTable> splitIntoRuns(Scan src) {
+   protected List<TempTable> splitIntoRuns(Scan src) {
       List<TempTable> temps = new ArrayList<TempTable>();
       src.beforeFirst();
       if (!src.next())
@@ -107,7 +107,7 @@ public class SortPlan implements Plan {
       return temps;
    }
    
-   private List<TempTable> doAMergeIteration(List<TempTable> runs) {
+   protected List<TempTable> doAMergeIteration(List<TempTable> runs) {
       List<TempTable> result = new ArrayList<TempTable>();
       while (runs.size() > 1) {
          TempTable p1 = runs.remove(0);
