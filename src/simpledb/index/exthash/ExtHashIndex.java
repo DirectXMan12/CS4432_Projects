@@ -15,7 +15,11 @@ import simpledb.file.Block;
 import simpledb.index.Index;
 
 /**
- * @author MARCO
+ * An extensible hash index. Uses the Index interface.
+ * The number of buckets used to store the data varies depending on
+ * how much space is needed. The initial 
+ * and each bucket is implemented as a file of index records.
+ * @author Brian and Solly (mostly Solly)
  * {@inheritDoc}
  */
 public class ExtHashIndex implements Index
@@ -59,16 +63,31 @@ public class ExtHashIndex implements Index
 		dir_ts = new TableScan(ti, tx);
 	}
 	
+	/**
+	 * 
+	 * @param skey
+	 * @return
+	 */
 	protected String calc_act_key(Constant skey)
 	{
 		return bucket_map[skey.hashCode() % NUM_BUCKETS];
 	}
 	
+	/**
+	 * 
+	 * @param virt_key
+	 * @return
+	 */
 	protected String get_act_key(int virt_key)
 	{
 		return bucket_map[virt_key];
 	}
 	
+	/**
+	 * 
+	 * @param skey
+	 * @return
+	 */
 	protected int calc_virt_key(Constant skey)
 	{
 		return skey.hashCode() % NUM_BUCKETS;
@@ -109,6 +128,11 @@ public class ExtHashIndex implements Index
 		return new RID(blknum, id);
 	}
 	
+	/**
+	 * 
+	 * @param bname
+	 * @return
+	 */
 	protected boolean bucketIsFull(String bname)
 	{
 		dir_ts.beforeFirst();
@@ -116,6 +140,11 @@ public class ExtHashIndex implements Index
 		return dir_ts.getInt("recnum")*RECORD_LEN >= BLOCK_SIZE; 
 	}
 	
+	/**
+	 * 
+	 * @param by_num
+	 * @param act_bucket_num
+	 */
 	protected void incrementBucketRecords(int by_num, String act_bucket_num)
 	{
 		dir_ts.beforeFirst();
@@ -123,6 +152,11 @@ public class ExtHashIndex implements Index
 		dir_ts.setInt("recnum", dir_ts.getInt("recnum")+by_num);
 	}
 	
+	/**
+	 * 
+	 * @param num
+	 * @param act_bucket_num
+	 */
 	protected void setBucketRecords(int num, String act_bucket_num)
 	{
 		dir_ts.beforeFirst();
@@ -135,11 +169,14 @@ public class ExtHashIndex implements Index
 	 */
 	public void expand()
 	{
-		//NUM_BUCKETS = (2 * NUM_BUCKETS);
+		//NUM_BUCKETS = (2 * NUM_BUCKETS); // Brian's Attempt - Failed
 		increase_resolution();
 		beforeFirst(searchkey);
 	}
 
+	/**
+	 * 
+	 */
 	protected void increase_resolution()
 	{
 		index_resolution++;
@@ -153,6 +190,11 @@ public class ExtHashIndex implements Index
 		bucket_map = new_bucket_map;
 	}
 	
+	/**
+	 * 
+	 * @param virt_key_spot
+	 * @return
+	 */
 	protected String getTblSuffix(int virt_key_spot)
 	{
 		return String.format("%0"+index_resolution+"d", virt_key_spot);
@@ -181,6 +223,10 @@ public class ExtHashIndex implements Index
 		
 	}
 
+	/**
+	 * 
+	 * @param virt_key_spot
+	 */
 	protected void recalc_buckets(int virt_key_spot)
 	{
 		TableInfo tmp_ti = new TableInfo(idxname+get_act_key(virt_key_spot), sch);
