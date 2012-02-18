@@ -1,5 +1,6 @@
 package simpledb.server;
 
+import simpledb.exploit.ExploitSortQueryPlanner;
 import simpledb.file.FileMgr;
 import simpledb.index.planner.IndexUpdatePlanner;
 import simpledb.buffer.*;
@@ -99,7 +100,7 @@ public class SimpleDB {
     * To change how the planner works, modify this method.
     * @return the system's planner for SQL commands
     */public static Planner planner() {
-      QueryPlanner  qplanner = new BasicQueryPlanner();
+      QueryPlanner  qplanner = new ExploitSortQueryPlanner(); //new BasicQueryPlanner();
       UpdatePlanner uplanner = new IndexUpdatePlanner(); //old: new BasicUpdatePlanner();
       return new Planner(qplanner, uplanner);
    }
