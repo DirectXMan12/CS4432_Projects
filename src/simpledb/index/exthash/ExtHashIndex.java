@@ -17,7 +17,7 @@ import simpledb.index.Index;
 /**
  * An extensible hash index. Uses the Index interface.
  * The number of buckets used to store the data varies depending on
- * how much space is needed. The initial 
+ * how much space is needed. The initial number of buckets is 4
  * and each bucket is implemented as a file of index records.
  * @author Brian and Solly (mostly Solly)
  * {@inheritDoc}
@@ -69,9 +69,9 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * finds the actual key of a bucket for use with the bucket map
 	 * @param skey
-	 * @return
+	 * @return the key based on the acual bucket page
 	 */
 	protected String calc_act_key(Constant skey)
 	{
@@ -79,9 +79,9 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * Finds the virtual key for use with the bucket map
 	 * @param virt_key
-	 * @return
+	 * @return the virtual key for the bucket page
 	 */
 	protected String get_act_key(int virt_key)
 	{
@@ -89,9 +89,9 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * determines what the virtual key is
 	 * @param skey
-	 * @return
+	 * @return an int representing the virtual key
 	 */
 	protected int calc_virt_key(Constant skey)
 	{
@@ -134,9 +134,9 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * indicates if a bucket is full or not
 	 * @param bname
-	 * @return
+	 * @return true if the bucket is full and false if it still has space
 	 */
 	protected boolean bucketIsFull(String bname)
 	{
@@ -146,7 +146,7 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * Used to increment through the index bucket by bucket
 	 * @param by_num
 	 * @param act_bucket_num
 	 */
@@ -158,7 +158,7 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * Stores the values in a bucket
 	 * @param num
 	 * @param act_bucket_num
 	 */
@@ -170,7 +170,8 @@ public class ExtHashIndex implements Index
 	}
 	
 	/**
-	 * 
+	 * called when the number of buckets needs to be
+	 * increased to provide space for more records
 	 */
 	public void expand()
 	{
@@ -180,7 +181,10 @@ public class ExtHashIndex implements Index
 	}
 
 	/**
-	 * 
+	 * Increases the resolution of the buckets. 
+	 * Once the resolution of the buckets has been
+	 * increased, it allows for more records to
+	 * be stored.
 	 */
 	protected void increase_resolution()
 	{
