@@ -13,6 +13,7 @@ import simpledb.parse.Lexer.IndexType;
 import simpledb.record.*;
 import simpledb.index.Index;
 import simpledb.index.btree.BTreeIndex;
+import simpledb.index.exthash.ExtHashIndex;
 import simpledb.index.hash.HashIndex;
 
 
@@ -56,13 +57,14 @@ public class IndexInfo {
    {
       Schema sch = schema();
       // Create new HashIndex for hash indexing
-      // TODO: implement other index types
       switch (idxtype)
       {
       	case sh:
       		return new HashIndex(idxname, sch, tx);
       	case bt:
       		return new BTreeIndex(idxname, sch, tx);
+      	case eh:
+      		return new ExtHashIndex(idxname, sch, tx);
       	default:
       		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
       }
@@ -84,13 +86,14 @@ public class IndexInfo {
       int rpb = BLOCK_SIZE / idxti.recordLength();
       int numblocks = si.recordsOutput() / rpb;
       // Call HashIndex.searchCost for hash indexing
-      // TODO: implement other index types
       switch(idxtype)
       {
       	case sh:
       		return HashIndex.searchCost(numblocks, rpb);
       	case bt:
       		return BTreeIndex.searchCost(numblocks, rpb);
+      	case eh:
+      		return ExtHashIndex.searchCost(numblocks, rpb);
   		default:
       		throw new UnsupportedOperationException("The '" + idxtype.toFullName() + "' type of index has not yet been implemented!");
       }

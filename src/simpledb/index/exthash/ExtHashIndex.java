@@ -24,7 +24,7 @@ import simpledb.index.Index;
  */
 public class ExtHashIndex implements Index
 {
-	public int BUCKET_SIZE;		// number of records per bucket
+	public static int BUCKET_SIZE;		// number of records per bucket
 	public int NUM_BUCKETS;
 	protected int RECORD_LEN;
 	public int index_resolution;
@@ -322,5 +322,19 @@ public class ExtHashIndex implements Index
 	{
 		if (ts != null) ts.close();		
 	}
-
+	
+	/**
+	 * Returns the cost of searching an index file having the
+	 * specified number of blocks.
+	 * The method assumes that all buckets are about the
+	 * same size, and so the cost is simply the size of
+	 * the bucket.
+	 * @param numblocks the number of blocks of index records
+	 * @param rpb the number of records per block (not used here)
+	 * @return the cost of traversing the index
+	 */
+	public static int searchCost(int numblocks, int rpb)
+	{
+		return numblocks*rpb / BUCKET_SIZE + 1;
+	}
 }
