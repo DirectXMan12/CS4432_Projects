@@ -88,7 +88,7 @@ public class SimpleDBBaseTest
 		try
 		{
 			stmt.executeQuery("select a51 from test5;");
-			CreateTestTables.addNRows(1, mainConnection);
+			//CreateTestTables.addNRows(1, mainConnection);
 		}
 		catch(SQLException ex)
 		{

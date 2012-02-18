@@ -69,8 +69,10 @@ public class CreateTestTables
 
 	public static void createIndicies(Statement s) throws SQLException
 	{
+		BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
+		SimpleDB.bufferMgr().resetBasicBufferMgr();
 		s.executeUpdate("create sh index idx1 on test1 (a11)");
-		//s.executeUpdate("create eh index idx2 on test2 (a21)");
+		s.executeUpdate("create eh index idx2 on test2 (a21)");
 		s.executeUpdate("create bt index idx3 on test3 (a31)");
 	}
 	

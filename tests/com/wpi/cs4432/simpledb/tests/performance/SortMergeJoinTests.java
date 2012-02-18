@@ -5,6 +5,9 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import simpledb.exploit.ExploitSortQueryPlanner;
+import simpledb.server.SimpleDB;
+
 import com.wpi.cs4432.simpledb.tests.SimpleDBBaseTest;
 
 public class SortMergeJoinTests extends SimpleDBBaseTest

@@ -1,5 +1,7 @@
 package simpledb.server;
 
+import java.lang.reflect.InvocationTargetException;
+
 import simpledb.exploit.ExploitSortQueryPlanner;
 import simpledb.file.FileMgr;
 import simpledb.index.planner.IndexUpdatePlanner;
@@ -99,7 +101,8 @@ public class SimpleDB {
     * Creates a planner for SQL commands.
     * To change how the planner works, modify this method.
     * @return the system's planner for SQL commands
-    */public static Planner planner() {
+    */
+   public static Planner planner() {
       QueryPlanner  qplanner = new ExploitSortQueryPlanner(); //new BasicQueryPlanner();
       UpdatePlanner uplanner = new IndexUpdatePlanner(); //old: new BasicUpdatePlanner();
       return new Planner(qplanner, uplanner);

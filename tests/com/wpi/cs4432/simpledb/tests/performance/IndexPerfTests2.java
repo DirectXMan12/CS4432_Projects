@@ -7,6 +7,9 @@ import java.util.Random;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import simpledb.opt.HeuristicQueryPlanner;
+import simpledb.server.SimpleDB;
+
 import com.wpi.cs4432.simpledb.tests.SimpleDBBaseTest;
 
 public class IndexPerfTests2 extends SimpleDBBaseTest

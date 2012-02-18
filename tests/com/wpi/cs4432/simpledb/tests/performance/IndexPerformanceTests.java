@@ -11,6 +11,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 
+import simpledb.opt.HeuristicQueryPlanner;
+import simpledb.server.SimpleDB;
+
 import com.carrotsearch.junitbenchmarks.BenchmarkRule;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkMethodChart;
 import com.carrotsearch.junitbenchmarks.annotation.BenchmarkHistoryChart;
@@ -71,6 +74,12 @@ public class IndexPerformanceTests extends SimpleDBBaseTest
 	}
 	
 	@Test
+	public void testExtHashSelectPerf() throws SQLException
+	{
+		for (int i = 0; i < 10; i++) stmt.executeQuery("select a21, a22 from test2 where a21 = "+randVal+";");
+	}
+	
+	@Test
 	public void testBPlusTreeSelectPerf() throws SQLException
 	{
 		for (int i = 0; i < 10; i++) stmt.executeQuery("select a31, a32 from test3 where a31 = "+randVal+";");
@@ -86,6 +95,12 @@ public class IndexPerformanceTests extends SimpleDBBaseTest
 	public void testSimpleHashJoinPerf() throws SQLException
 	{
 		for (int i = 0; i < 50; i++) stmt.executeQuery("select a11, a12, a51, a52 from test1, test5 where a11 = a51;");
+	}
+	
+	@Test
+	public void testExtHashJoinPerf() throws SQLException
+	{
+		for (int i = 0; i < 50; i++) stmt.executeQuery("select a21, a22, a51, a52 from test2, test5 where a21 = a51;");
 	}
 	
 	@Test
