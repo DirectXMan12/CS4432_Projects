@@ -5,11 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 
-import simpledb.buffer.BasicBufferMgr;
-import simpledb.buffer.BufferMgr;
-import simpledb.buffer.LRUBasicBufferMgr;
-import simpledb.server.SimpleDB;
-
 
 public class CreateTestTables 
 {
@@ -23,12 +18,9 @@ public class CreateTestTables
 			
 			if (!addRecords) for (int i = 1; i < 6; i++) s.executeUpdate("Create table test"+i+" (a"+i+"1 int, a"+i+"2 int)");
 			
-			BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
-			SimpleDB.bufferMgr().resetBasicBufferMgr();
-			
 			if (!addRecords)
 			{
-				//createIndicies(s);
+				createIndicies(s);
 			}
 			
 			Random randomSeed = new Random();
@@ -36,8 +28,6 @@ public class CreateTestTables
 		
 			for(int i=1;i<6;i++)
 			{
-				/*if(i!=5)
-				{*/
 					rand=new Random(seed);// ensure every table gets the same data
 					System.out.println("creating table "+i);
 					for (int k = 0; k < 100; k++)
@@ -48,14 +38,6 @@ public class CreateTestTables
 						}
 						System.out.println("created up through row "+(k+1)*numEntries/100);
 					}
-				//}
-				/*else//case where i=5
-				{
-					for(int j=0;j<numEntries/2;j++)// insert 10000(half the size) records into test5
-					{
-						s.executeUpdate("insert into test"+i+" (a51,a52) values("+j+","+j+ ")");
-					}
-				}*/
 		   }
 		} 
 		catch (SQLException e)
@@ -63,14 +45,10 @@ public class CreateTestTables
 			System.out.println("Issue creating test tables:");
 			e.printStackTrace();
 		}
-		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
-		SimpleDB.bufferMgr().resetBasicBufferMgr();
 	}
 
 	public static void createIndicies(Statement s) throws SQLException
 	{
-		BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
-		SimpleDB.bufferMgr().resetBasicBufferMgr();
 		s.executeUpdate("create sh index idx1 on test1 (a11)");
 		s.executeUpdate("create eh index idx2 on test2 (a21)");
 		s.executeUpdate("create bt index idx3 on test3 (a31)");
@@ -83,9 +61,6 @@ public class CreateTestTables
 		try
 		{
 			s=conn.createStatement();
-			
-			BufferMgr.setBasicBuffMgrType(BasicBufferMgr.class);
-			SimpleDB.bufferMgr().resetBasicBufferMgr();
 			
 			Random randomSeed = new Random();
 			int seed = randomSeed.nextInt(20000);
@@ -104,8 +79,6 @@ public class CreateTestTables
 			System.out.println("Issue creating test tables:");
 			e.printStackTrace();
 		}
-		BufferMgr.setBasicBuffMgrType(LRUBasicBufferMgr.class);
-		SimpleDB.bufferMgr().resetBasicBufferMgr();
 	}
 }
 
