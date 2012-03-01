@@ -15,6 +15,7 @@ import simpledb.tx.Transaction;
 
 /**
  * @author directxman12
+ * @author Jeff Namias
  *
  */
 public class WaitsForLockTable
@@ -53,9 +54,9 @@ public class WaitsForLockTable
 			addEdge(trans, _locks.get(blk));
 			addWaitingOn(trans, blk);
 			
-			if (hasCycle(blk, trans))
+			if (hasCycle(trans))
 			{
-				_edges.get(blk).remove(_locks.get(blk));
+				_edges.get(trans).remove(_locks.get(blk));
 				_waitingOn.get(trans).remove(blk);
 				throw new LockAbortException();
 			}
@@ -115,9 +116,9 @@ public class WaitsForLockTable
 			Transaction oldTrans = trans;
 			addEdge(trans, _locks.get(blk));
 			addWaitingOn(trans, blk);
-			if (hasCycle(blk, trans))
+			if (hasCycle(trans))
 			{
-				_edges.get(blk).remove(_locks.get(blk));
+				_edges.get(trans).remove(_locks.get(blk));
 				_waitingOn.get(trans).remove(blk);
 				throw new LockAbortException();
 			}
@@ -134,7 +135,7 @@ public class WaitsForLockTable
 				
 				if (_locks.get(blk) != oldTrans)
 				{
-					_edges.get(blk).remove(oldTrans);
+					_edges.get(trans).remove(oldTrans);
 					addEdge(trans, _locks.get(blk));
 					oldTrans = _locks.get(blk);
 				}
@@ -144,9 +145,38 @@ public class WaitsForLockTable
 		_lockVals.put(blk, -1);
 	}
 	
-	public synchronized boolean hasCycle(Block blk, Transaction trans)
+	//checks to see if the current (ie given) transaction is in a cycle
+	//if hasCycle is called, it assumes the given transaction is requesting a resource that is locked
+	public synchronized boolean hasCycle(Transaction trans)
 	{
-		return false; // TODO: implement the hasCycle function
+		//list of transactions to traverse
+		ArrayList<Transaction> check = new ArrayList<Transaction>();
+		//we begin by adding trans, the transaction we are interested in, to list
+		check.add(trans);
+		//set current traversal marker to index 0
+		int current=0;
+		//loop until we have checked entire list (or until we return inside of loop -- if cycle is found)
+		while(current<check.size()){
+			//list of transactions that the transaction at index current is waiting on
+			ArrayList<Transaction> dest = _edges.get(check.get(current));
+			//if the current transaction is waiting on trans, we have a cycle
+			if(dest.contains(trans))
+				return true;
+			//otherwise, we are interested in continuing to look for cycle
+			else{
+				//for each transaction the current transaction is waiting on
+				for(Transaction d : dest){
+					//check if it is in the list of transactions to check
+					if(!check.contains(d))
+						//if not, add it
+						check.add(d);
+				}	
+			}
+			//increment the traversal marker to the next index
+			current++;
+		}
+		//if we have checked all indices and did not find a cycle (aka if we reach this point), we do not have a cycle
+		return false;
 	}
 	
 	public synchronized void unlock(Block blk, Transaction trans)

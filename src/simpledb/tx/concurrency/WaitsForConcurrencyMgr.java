@@ -19,7 +19,7 @@ public class WaitsForConcurrencyMgr /* extends ConcurrencyMgr */ {
     * The global lock table.  This variable is static because all transactions
     * share the same table.
     */
-   private static WaitsForLockTable locktbl = new WaitsForLockTable();
+   private static WaitsForLockTable waitsforlocktbl = new WaitsForLockTable();
    private Map<Block,String> locks  = new HashMap<Block,String>();
    
    /**
@@ -31,7 +31,7 @@ public class WaitsForConcurrencyMgr /* extends ConcurrencyMgr */ {
     */
    public void sLock(Block blk, Transaction trans) {
       if (locks.get(blk) == null) {
-         locktbl.sLock(blk, trans);
+         waitsforlocktbl.sLock(blk, trans);
          locks.put(blk, "S");
       }
    }
@@ -47,7 +47,7 @@ public class WaitsForConcurrencyMgr /* extends ConcurrencyMgr */ {
    public void xLock(Block blk, Transaction trans) {
       if (!hasXLock(blk)) {
          sLock(blk, trans);
-         locktbl.xLock(blk, trans);
+         waitsforlocktbl.xLock(blk, trans);
          locks.put(blk, "X");
       }
    }
@@ -58,7 +58,7 @@ public class WaitsForConcurrencyMgr /* extends ConcurrencyMgr */ {
     */
    public void release(Transaction trans) {
       for (Block blk : locks.keySet())
-         locktbl.unlock(blk, trans);
+         waitsforlocktbl.unlock(blk, trans);
       locks.clear();
    }
    

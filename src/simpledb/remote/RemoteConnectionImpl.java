@@ -20,7 +20,7 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
     * @throws RemoteException
     */
    RemoteConnectionImpl() throws RemoteException {
-      tx = new WaitsForTransaction();
+      tx = new Transaction();
    }
    
    /**
