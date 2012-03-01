@@ -2,13 +2,22 @@ package com.wpi.cs4432.simpledb.tests.functionality;
 
 import static org.junit.Assert.assertEquals;
 
+import java.rmi.Naming;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.junit.Test;
 
 import simpledb.file.Block;
+import simpledb.remote.RemoteDriver;
+import simpledb.remote.RemoteDriverImpl;
+import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
 import simpledb.tx.WaitsForTransaction;
 import simpledb.tx.WoundYoungerTransaction;
 
+import com.wpi.cs4432.simpledb.tests.CreateTestTables;
 import com.wpi.cs4432.simpledb.tests.SimpleDBBaseTest;
 public class TxMgrTest extends SimpleDBBaseTest
 {
@@ -16,7 +25,7 @@ public class TxMgrTest extends SimpleDBBaseTest
 	public void RawTxMgrTest()
 	{
 		
-		Transaction tx = new WoundYoungerTransaction();
+		Transaction tx = new WaitsForTransaction();
 		//Transaction tx = new WaitsForTransaction();
 		//Transaction tx = new Transaction();
 		
@@ -33,7 +42,7 @@ public class TxMgrTest extends SimpleDBBaseTest
 		tx.unpin(blk); // T1 Unlock
 		tx.commit();
 
-		Transaction tx2 = new WoundYoungerTransaction();
+		Transaction tx2 = new WaitsForTransaction();
 		//Transaction tx2 = new WaitsForTransaction();
 		//Transaction tx2 = new Transaction();
 		tx2.pin(blk); // T2 Lock
@@ -43,5 +52,22 @@ public class TxMgrTest extends SimpleDBBaseTest
 		
 		tx2.unpin(blk); // T2 unlock
 		tx2.commit();
+	}
+	
+	@Test
+	public void BlackTxMgrTest() throws Exception
+	{
+		
+		try
+		{
+				SimpleDBBaseTest.setUpBeforeClass();
+				ResultSet rs = stmt.executeQuery("select a51 from test5;");
+				System.out.println(rs.toString());
+				
+		}
+		catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

@@ -42,7 +42,7 @@ public class SimpleDB {
     */
    public static void init(String dirname) {
       initFileLogAndBufferMgr(dirname);
-	  Transaction tx = new WoundYoungerTransaction();
+	  Transaction tx = new WaitsForTransaction();
       //Transaction tx = new WaitsForTransaction();
       //Transaction tx = new Transaction();
       boolean isnew = fm.isNew();

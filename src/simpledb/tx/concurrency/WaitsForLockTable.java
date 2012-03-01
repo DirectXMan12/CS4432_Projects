@@ -45,7 +45,15 @@ public class WaitsForLockTable
 		if (_waitingOn.get(trans) == null) _waitingOn.put(trans, new ArrayList<Block>());
 		_waitingOn.get(trans).add(blk);
 	}
-	
+   /**
+    * Grants an SLock on the specified block.
+    * If an XLock exists when the method is called,
+    * then the calling thread will wait
+    * until the lock is released. If a cycle is detected, 
+    * a LockAbortException will be thrown.
+    * @param blk a reference to the disk block
+    * @param trans a reference to the transaction
+    */
 	public synchronized void sLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
@@ -112,6 +120,15 @@ public class WaitsForLockTable
 		}
 	}
 	
+   /**
+    * Grants an XLock on the specified block.
+    * If an XLock exists when the method is called,
+    * then the calling thread will wait
+    * until the lock is released. If a cycle is detected, 
+    * a LockAbortException will be thrown.
+    * @param blk a reference to the disk block
+    * @param trans a reference to the transaction
+    */
 	public synchronized void xLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
@@ -155,8 +172,11 @@ public class WaitsForLockTable
 		_lockVals.put(blk, -1);
 	}
 	
-	//checks to see if the current (ie given) transaction is in a cycle
-	//if hasCycle is called, it assumes the given transaction is requesting a resource that is locked
+	/**checks to see if the current (ie given) transaction is in a cycle
+	 * if hasCycle is called, it assumes the given transaction is requesting a resource that is locked\
+	 * @param trans transaction being checked to see if it occurs in a cycle
+	 * @return boolean of whether transactions occurs in a cycle
+	 */
 	public synchronized boolean hasCycle(Transaction trans)
 	{
 		//list of transactions to traverse
@@ -188,7 +208,12 @@ public class WaitsForLockTable
 		//if we have checked all indices and did not find a cycle (aka if we reach this point), we do not have a cycle
 		return false;
 	}
-	
+   /**
+    * Releases a lock on the specified block.
+    * The waiting transactions are notified.
+    * @param blk a reference to the disk block
+    * @param trans a reference to the transaction
+    */
 	public synchronized void unlock(Block blk, Transaction trans)
 	{
 		// check to see if this is the primary holder of the lock
