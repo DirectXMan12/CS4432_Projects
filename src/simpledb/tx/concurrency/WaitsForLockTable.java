@@ -50,7 +50,6 @@ public class WaitsForLockTable
 		_nodes.add(trans);
 		if (_locks.get(blk) != null && _lockVals.get(blk) < 0)
 		{
-			// TODO: check for cycles
 			addEdge(trans, _locks.get(blk));
 			addWaitingOn(trans, blk);
 			

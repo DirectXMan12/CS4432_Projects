@@ -1,22 +1,23 @@
 package simpledb.tx;
 
-import simpledb.server.SimpleDB;
+import simpledb.buffer.Buffer;
+import simpledb.buffer.PageFormatter;
 import simpledb.file.Block;
-import simpledb.buffer.*;
-import simpledb.tx.recovery.RecoveryMgr;
+import simpledb.server.SimpleDB;
 import simpledb.tx.concurrency.ConcurrencyMgr;
+import simpledb.tx.concurrency.WaitsForConcurrencyMgr;
+import simpledb.tx.recovery.RecoveryMgr;
 
 /**
- * Provides transaction management for clients,
- * ensuring that all transactions are serializable, recoverable,
- * and in general satisfy the ACID properties.
+ * TODO: doc
  * @author Edward Sciore
  */
-public class Transaction implements Comparable<Transaction> {
+public class WaitsForTransaction extends Transaction
+{
    private static int nextTxNum = 0;
    private static final int END_OF_FILE = -1;
    private RecoveryMgr    recoveryMgr;
-   private ConcurrencyMgr concurMgr;
+   private WaitsForConcurrencyMgr concurMgr;
    private int txnum;
    private BufferList myBuffers = new BufferList();
    
@@ -32,15 +33,10 @@ public class Transaction implements Comparable<Transaction> {
     * {@link simpledb.server.SimpleDB#initFileLogAndBufferMgr(String)} or
     * is called first.
     */
-   public Transaction() {
+   public WaitsForTransaction() {
       txnum       = nextTxNumber();
       recoveryMgr = new RecoveryMgr(txnum);
-      concurMgr   = new ConcurrencyMgr();
-   }
-   
-   public int getTxNum()
-   {
-	   return txnum;
+      concurMgr   = new WaitsForConcurrencyMgr();
    }
    
    /**
@@ -49,9 +45,10 @@ public class Transaction implements Comparable<Transaction> {
     * writes and flushes a commit record to the log,
     * releases all locks, and unpins any pinned buffers.
     */
+   @Override
    public void commit() {
       recoveryMgr.commit();
-      concurMgr.release();
+      concurMgr.release(this);
       myBuffers.unpinAll();
       System.out.println("transaction " + txnum + " committed");
    }
@@ -63,43 +60,12 @@ public class Transaction implements Comparable<Transaction> {
     * writes and flushes a rollback record to the log,
     * releases all locks, and unpins any pinned buffers.
     */
+   @Override
    public void rollback() {
       recoveryMgr.rollback();
-      concurMgr.release();
+      concurMgr.release(this);
       myBuffers.unpinAll();
       System.out.println("transaction " + txnum + " rolled back");
-   }
-   
-   /**
-    * Flushes all modified buffers.
-    * Then goes through the log, rolling back all
-    * uncommitted transactions.  Finally, 
-    * writes a quiescent checkpoint record to the log.
-    * This method is called only during system startup,
-    * before user transactions begin.
-    */
-   public void recover() {
-      SimpleDB.bufferMgr().flushAll(txnum);
-      recoveryMgr.recover();
-   }
-   
-   /**
-    * Pins the specified block.
-    * The transaction manages the buffer for the client.
-    * @param blk a reference to the disk block
-    */
-   public void pin(Block blk) {
-      myBuffers.pin(blk);
-   }
-   
-   /**
-    * Unpins the specified block.
-    * The transaction looks up the buffer pinned to this block,
-    * and unpins it.
-    * @param blk a reference to the disk block
-    */
-   public void unpin(Block blk) {
-      myBuffers.unpin(blk);
    }
    
    /**
@@ -111,8 +77,9 @@ public class Transaction implements Comparable<Transaction> {
     * @param offset the byte offset within the block
     * @return the integer stored at that offset
     */
+   @Override
    public int getInt(Block blk, int offset) {
-      concurMgr.sLock(blk);
+      concurMgr.sLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       return buff.getInt(offset);
    }
@@ -126,8 +93,9 @@ public class Transaction implements Comparable<Transaction> {
     * @param offset the byte offset within the block
     * @return the string stored at that offset
     */
+   @Override
    public String getString(Block blk, int offset) {
-      concurMgr.sLock(blk);
+      concurMgr.sLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       return buff.getString(offset);
    }
@@ -145,8 +113,9 @@ public class Transaction implements Comparable<Transaction> {
     * @param offset a byte offset within that block
     * @param val the value to be stored
     */
+   @Override
    public void setInt(Block blk, int offset, int val) {
-      concurMgr.xLock(blk);
+      concurMgr.xLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setInt(buff, offset, val);
       buff.setInt(offset, val, txnum, lsn);
@@ -165,8 +134,9 @@ public class Transaction implements Comparable<Transaction> {
     * @param offset a byte offset within that block
     * @param val the value to be stored
     */
+   @Override
    public void setString(Block blk, int offset, String val) {
-      concurMgr.xLock(blk);
+      concurMgr.xLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setString(buff, offset, val);
       buff.setString(offset, val, txnum, lsn);
@@ -180,9 +150,10 @@ public class Transaction implements Comparable<Transaction> {
     * @param filename the name of the file
     * @return the number of blocks in the file
     */
+   @Override
    public int size(String filename) {
       Block dummyblk = new Block(filename, END_OF_FILE);
-      concurMgr.sLock(dummyblk);
+      concurMgr.sLock(dummyblk, this);
       return SimpleDB.fileMgr().size(filename);
    }
    
@@ -195,23 +166,12 @@ public class Transaction implements Comparable<Transaction> {
     * @param fmtr the formatter used to initialize the new page
     * @return a reference to the newly-created disk block
     */
+   @Override
    public Block append(String filename, PageFormatter fmtr) {
       Block dummyblk = new Block(filename, END_OF_FILE);
-      concurMgr.xLock(dummyblk);
+      concurMgr.xLock(dummyblk, this);
       Block blk = myBuffers.pinNew(filename, fmtr);
       unpin(blk);
       return blk;
    }
-   
-   protected static synchronized int nextTxNumber() {
-      nextTxNum++;
-      System.out.println("new transaction: " + nextTxNum);
-      return nextTxNum;
-   }
-
-	@Override
-	public int compareTo(Transaction o)
-	{
-		return Integer.compare(this.getTxNum(), o.getTxNum());
-	}
 }
