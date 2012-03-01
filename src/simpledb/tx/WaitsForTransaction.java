@@ -14,13 +14,9 @@ import simpledb.tx.recovery.RecoveryMgr;
  */
 public class WaitsForTransaction extends Transaction
 {
-   private static int nextTxNum = 0;
-   private static final int END_OF_FILE = -1;
-   private RecoveryMgr    recoveryMgr;
-   private WaitsForConcurrencyMgr concurMgr;
-   private int txnum;
-   private BufferList myBuffers = new BufferList();
-   
+	
+   protected WaitsForConcurrencyMgr waitsForConcurMgr;
+
    /**
     * Creates a new transaction and its associated 
     * recovery and concurrency managers.
@@ -36,7 +32,7 @@ public class WaitsForTransaction extends Transaction
    public WaitsForTransaction() {
       txnum       = nextTxNumber();
       recoveryMgr = new RecoveryMgr(txnum);
-      concurMgr   = new WaitsForConcurrencyMgr();
+      waitsForConcurMgr   = new WaitsForConcurrencyMgr();
    }
    
    /**
@@ -48,7 +44,7 @@ public class WaitsForTransaction extends Transaction
    @Override
    public void commit() {
       recoveryMgr.commit();
-      concurMgr.release(this);
+      waitsForConcurMgr.release(this);
       myBuffers.unpinAll();
       System.out.println("transaction " + txnum + " committed");
    }
@@ -63,7 +59,7 @@ public class WaitsForTransaction extends Transaction
    @Override
    public void rollback() {
       recoveryMgr.rollback();
-      concurMgr.release(this);
+      waitsForConcurMgr.release(this);
       myBuffers.unpinAll();
       System.out.println("transaction " + txnum + " rolled back");
    }
@@ -79,7 +75,7 @@ public class WaitsForTransaction extends Transaction
     */
    @Override
    public int getInt(Block blk, int offset) {
-      concurMgr.sLock(blk, this);
+      waitsForConcurMgr.sLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       return buff.getInt(offset);
    }
@@ -95,7 +91,7 @@ public class WaitsForTransaction extends Transaction
     */
    @Override
    public String getString(Block blk, int offset) {
-      concurMgr.sLock(blk, this);
+	  waitsForConcurMgr.sLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       return buff.getString(offset);
    }
@@ -115,7 +111,7 @@ public class WaitsForTransaction extends Transaction
     */
    @Override
    public void setInt(Block blk, int offset, int val) {
-      concurMgr.xLock(blk, this);
+	  waitsForConcurMgr.xLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setInt(buff, offset, val);
       buff.setInt(offset, val, txnum, lsn);
@@ -136,7 +132,7 @@ public class WaitsForTransaction extends Transaction
     */
    @Override
    public void setString(Block blk, int offset, String val) {
-      concurMgr.xLock(blk, this);
+	  waitsForConcurMgr.xLock(blk, this);
       Buffer buff = myBuffers.getBuffer(blk);
       int lsn = recoveryMgr.setString(buff, offset, val);
       buff.setString(offset, val, txnum, lsn);
@@ -153,7 +149,7 @@ public class WaitsForTransaction extends Transaction
    @Override
    public int size(String filename) {
       Block dummyblk = new Block(filename, END_OF_FILE);
-      concurMgr.sLock(dummyblk, this);
+      waitsForConcurMgr.sLock(dummyblk, this);
       return SimpleDB.fileMgr().size(filename);
    }
    
@@ -169,7 +165,7 @@ public class WaitsForTransaction extends Transaction
    @Override
    public Block append(String filename, PageFormatter fmtr) {
       Block dummyblk = new Block(filename, END_OF_FILE);
-      concurMgr.xLock(dummyblk, this);
+      waitsForConcurMgr.xLock(dummyblk, this);
       Block blk = myBuffers.pinNew(filename, fmtr);
       unpin(blk);
       return blk;

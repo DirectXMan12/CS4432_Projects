@@ -41,7 +41,8 @@ public class SimpleDB {
     */
    public static void init(String dirname) {
       initFileLogAndBufferMgr(dirname);
-      Transaction tx = new Transaction();
+      Transaction tx = new WaitsForTransaction();
+      //Transaction tx = new Transaction();
       boolean isnew = fm.isNew();
       if (isnew)
          System.out.println("creating new database");

@@ -13,12 +13,12 @@ import simpledb.tx.concurrency.ConcurrencyMgr;
  * @author Edward Sciore
  */
 public class Transaction implements Comparable<Transaction> {
-   private static int nextTxNum = 0;
-   private static final int END_OF_FILE = -1;
-   private RecoveryMgr    recoveryMgr;
-   private ConcurrencyMgr concurMgr;
-   private int txnum;
-   private BufferList myBuffers = new BufferList();
+   protected static int nextTxNum = 0;
+   protected static final int END_OF_FILE = -1;
+   protected RecoveryMgr    recoveryMgr;
+   protected ConcurrencyMgr concurMgr;
+   protected int txnum;
+   protected BufferList myBuffers = new BufferList();
    
    /**
     * Creates a new transaction and its associated 

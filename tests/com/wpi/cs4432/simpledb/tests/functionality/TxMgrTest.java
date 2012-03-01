@@ -15,7 +15,8 @@ public class TxMgrTest extends SimpleDBBaseTest
 	public void RawTxMgrTest()
 	{
 		
-		Transaction tx = new Transaction();
+		Transaction tx = new WaitsForTransaction();
+		//Transaction tx = new Transaction();
 		
 		Block blk = new Block("testfile", 0);
 		tx.pin(blk);
@@ -29,7 +30,8 @@ public class TxMgrTest extends SimpleDBBaseTest
 		tx.unpin(blk);
 		tx.commit();
 
-		Transaction tx2 = new Transaction();
+		Transaction tx2 = new WaitsForTransaction();
+		//Transaction tx2 = new Transaction();
 		tx2.pin(blk);
 		
 		assertEquals(tx2.getInt(blk, 20), ival+1);
