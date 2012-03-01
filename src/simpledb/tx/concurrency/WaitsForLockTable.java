@@ -103,7 +103,7 @@ public class WaitsForLockTable
 		}
 		else
 		{
-			_edges.get(src).add(dest);
+			if (!_edges.get(src).contains(dest)) _edges.get(src).add(dest);
 		}
 	}
 	
