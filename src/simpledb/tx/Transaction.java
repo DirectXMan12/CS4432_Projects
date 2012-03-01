@@ -12,7 +12,7 @@ import simpledb.tx.concurrency.ConcurrencyMgr;
  * and in general satisfy the ACID properties.
  * @author Edward Sciore
  */
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
    private static int nextTxNum = 0;
    private static final int END_OF_FILE = -1;
    private RecoveryMgr    recoveryMgr;
@@ -36,6 +36,11 @@ public class Transaction {
       txnum       = nextTxNumber();
       recoveryMgr = new RecoveryMgr(txnum);
       concurMgr   = new ConcurrencyMgr();
+   }
+   
+   public int getTxNum()
+   {
+	   return txnum;
    }
    
    /**
@@ -203,4 +208,10 @@ public class Transaction {
       System.out.println("new transaction: " + nextTxNum);
       return nextTxNum;
    }
+
+	@Override
+	public int compareTo(Transaction o)
+	{
+		return Integer.compare(this.getTxNum(), o.getTxNum());
+	}
 }
