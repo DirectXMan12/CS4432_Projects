@@ -49,6 +49,8 @@ public class WaitsForLockTable
 	public synchronized void sLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
+		if (_locks.get(blk) != null && _locks.get(blk).equals(trans)) return;
+		
 		if (_locks.get(blk) != null && _lockVals.get(blk) < 0)
 		{
 			addEdge(trans, _locks.get(blk));
@@ -111,6 +113,11 @@ public class WaitsForLockTable
 	public synchronized void xLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
+		if (_locks.get(blk) != null && _locks.get(blk).equals(trans) && _lockVals.get(blk) == 1)
+		{
+			_lockVals.put(blk, -1);
+			return;
+		}
 		if (_locks.get(blk) != null)
 		{
 			Transaction oldTrans = trans;

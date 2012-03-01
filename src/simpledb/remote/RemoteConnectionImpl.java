@@ -59,6 +59,7 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
    void commit() {
       tx.commit();
       tx = new WaitsForTransaction();
+      //tx = new Transaction();
    }
    
    /**
@@ -68,6 +69,7 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
    void rollback() {
       tx.rollback();
       tx = new WaitsForTransaction();
+      //tx = new Transaction();
    }
 }
 
