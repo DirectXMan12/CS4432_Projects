@@ -18,10 +18,10 @@ public class CreateTestTables
 			
 			if (!addRecords) for (int i = 1; i < 6; i++) s.executeUpdate("Create table test"+i+" (a"+i+"1 int, a"+i+"2 int)");
 			
-			if (!addRecords)
+			/*if (!addRecords)
 			{
 				createIndicies(s);
-			}
+			}*/
 			
 			Random randomSeed = new Random();
 			int seed = randomSeed.nextInt(20000);
@@ -47,12 +47,12 @@ public class CreateTestTables
 		}
 	}
 
-	public static void createIndicies(Statement s) throws SQLException
+	/*public static void createIndicies(Statement s) throws SQLException
 	{
 		s.executeUpdate("create sh index idx1 on test1 (a11)");
 		s.executeUpdate("create eh index idx2 on test2 (a21)");
 		s.executeUpdate("create bt index idx3 on test3 (a31)");
-	}
+	}*/
 	
 	public static void addNRows(int numEntries, Connection conn)
 	{

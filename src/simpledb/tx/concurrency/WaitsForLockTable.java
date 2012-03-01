@@ -49,7 +49,7 @@ public class WaitsForLockTable
 	public synchronized void sLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
-		if (_locks.get(blk) != null && _lockVals.get(blk) < 0)
+		if (_locks.get(blk) != null && _locks.get(blk).compareTo(trans) != 0 && _lockVals.get(blk) < 0)
 		{
 			addEdge(trans, _locks.get(blk));
 			addWaitingOn(trans, blk);
@@ -61,7 +61,7 @@ public class WaitsForLockTable
 				throw new LockAbortException();
 			}
 			
-			while(_locks.get(blk) != null && _lockVals.get(blk) < 0)
+			while(_locks.get(blk) != null && _locks.get(blk).compareTo(trans) != 0 && _lockVals.get(blk) < 0)
 			{
 				try
 				{
@@ -74,7 +74,7 @@ public class WaitsForLockTable
 			}
 		}
 		
-		if (_locks.get(blk) != null && _lockVals.get(blk) > 0)
+		if (_locks.get(blk) != null && _locks.get(blk).compareTo(trans) != 0 && _lockVals.get(blk) > 0)
 		{
 			pushOthersLock(blk, trans);
 		}
@@ -96,22 +96,24 @@ public class WaitsForLockTable
 	
 	protected synchronized void addEdge(Transaction src, Transaction dest)
 	{
-		if (!_edges.containsKey(src))
-		{
-			ArrayList<Transaction> ar = new ArrayList<Transaction>();
-			ar.add(dest);
-			_edges.put(src, ar);
-		}
-		else
-		{
-			if (!_edges.get(src).contains(dest)) _edges.get(src).add(dest);
+		if(dest.compareTo(src)!=0){
+			if (!_edges.containsKey(src))
+			{
+				ArrayList<Transaction> ar = new ArrayList<Transaction>();
+				ar.add(dest);
+				_edges.put(src, ar);
+			}
+			else
+			{
+				if (!_edges.get(src).contains(dest)) _edges.get(src).add(dest);
+			}
 		}
 	}
 	
 	public synchronized void xLock(Block blk, Transaction trans)
 	{
 		_nodes.add(trans);
-		if (_locks.get(blk) != null)
+		if (_locks.get(blk) != null && _locks.get(blk).compareTo(trans) != 0)
 		{
 			Transaction oldTrans = trans;
 			addEdge(trans, _locks.get(blk));
@@ -122,7 +124,7 @@ public class WaitsForLockTable
 				_waitingOn.get(trans).remove(blk);
 				throw new LockAbortException();
 			}
-			while (_locks.get(blk) != null && _lockVals.get(blk) != 0)
+			while (_locks.get(blk) != null && _locks.get(blk).compareTo(trans) != 0 && _lockVals.get(blk) != 0)
 			{
 				try
 				{
