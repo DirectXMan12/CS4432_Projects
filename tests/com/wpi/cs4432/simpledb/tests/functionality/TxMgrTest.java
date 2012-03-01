@@ -7,6 +7,7 @@ import org.junit.Test;
 import simpledb.file.Block;
 import simpledb.tx.Transaction;
 import simpledb.tx.WaitsForTransaction;
+import simpledb.tx.WoundYoungerTransaction;
 
 import com.wpi.cs4432.simpledb.tests.SimpleDBBaseTest;
 public class TxMgrTest extends SimpleDBBaseTest
@@ -15,7 +16,8 @@ public class TxMgrTest extends SimpleDBBaseTest
 	public void RawTxMgrTest()
 	{
 		
-		Transaction tx = new WaitsForTransaction();
+		Transaction tx = new WoundYoungerTransaction();
+		//Transaction tx = new WaitsForTransaction();
 		//Transaction tx = new Transaction();
 		
 		Block blk = new Block("testfile", 0);
@@ -31,7 +33,8 @@ public class TxMgrTest extends SimpleDBBaseTest
 		tx.unpin(blk); // T1 Unlock
 		tx.commit();
 
-		Transaction tx2 = new WaitsForTransaction();
+		Transaction tx2 = new WoundYoungerTransaction();
+		//Transaction tx2 = new WaitsForTransaction();
 		//Transaction tx2 = new Transaction();
 		tx2.pin(blk); // T2 Lock
 		

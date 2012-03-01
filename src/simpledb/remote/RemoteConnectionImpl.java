@@ -2,6 +2,7 @@ package simpledb.remote;
 
 import simpledb.tx.Transaction;
 import simpledb.tx.WaitsForTransaction;
+import simpledb.tx.WoundYoungerTransaction;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -20,7 +21,8 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
     * @throws RemoteException
     */
    RemoteConnectionImpl() throws RemoteException {
-      tx = new WaitsForTransaction();
+	   tx = new WoundYoungerTransaction();
+      //tx = new WaitsForTransaction();
 	  //tx = new Transaction();
    }
    
@@ -58,7 +60,8 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
     */
    void commit() {
       tx.commit();
-      tx = new WaitsForTransaction();
+	   tx = new WoundYoungerTransaction();
+      //tx = new WaitsForTransaction();
       //tx = new Transaction();
    }
    
@@ -68,7 +71,8 @@ class RemoteConnectionImpl extends UnicastRemoteObject implements RemoteConnecti
     */
    void rollback() {
       tx.rollback();
-      tx = new WaitsForTransaction();
+	   tx = new WoundYoungerTransaction();
+      //tx = new WaitsForTransaction();
       //tx = new Transaction();
    }
 }

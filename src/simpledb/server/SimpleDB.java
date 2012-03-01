@@ -11,6 +11,7 @@ import simpledb.planner.QueryPlanner;
 import simpledb.planner.UpdatePlanner;
 import simpledb.tx.Transaction;
 import simpledb.tx.WaitsForTransaction;
+import simpledb.tx.WoundYoungerTransaction;
 
 /**
  * The class that provides system-wide static global values.
@@ -41,7 +42,8 @@ public class SimpleDB {
     */
    public static void init(String dirname) {
       initFileLogAndBufferMgr(dirname);
-      Transaction tx = new WaitsForTransaction();
+	  Transaction tx = new WoundYoungerTransaction();
+      //Transaction tx = new WaitsForTransaction();
       //Transaction tx = new Transaction();
       boolean isnew = fm.isNew();
       if (isnew)

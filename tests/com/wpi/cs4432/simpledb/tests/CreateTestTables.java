@@ -20,7 +20,7 @@ public class CreateTestTables
 			
 			if (!addRecords)
 			{
-				createIndicies(s);
+			//	createIndicies(s);
 			}
 			
 			Random randomSeed = new Random();
