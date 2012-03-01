@@ -19,25 +19,26 @@ public class TxMgrTest extends SimpleDBBaseTest
 		//Transaction tx = new Transaction();
 		
 		Block blk = new Block("testfile", 0);
-		tx.pin(blk);
+		tx.pin(blk); // T1 lock
 
 		int ival = tx.getInt(blk, 20);
 		String sval = tx.getString(blk, 40);
 
+		// should this throw an error?
 		tx.setInt(blk, 20, ival+1);
 		tx.setString(blk, 40, sval+"1");
 		
-		tx.unpin(blk);
+		tx.unpin(blk); // T1 Unlock
 		tx.commit();
 
 		Transaction tx2 = new WaitsForTransaction();
 		//Transaction tx2 = new Transaction();
-		tx2.pin(blk);
+		tx2.pin(blk); // T2 Lock
 		
 		assertEquals(tx2.getInt(blk, 20), ival+1);
 		assertEquals(tx2.getString(blk, 40), sval+"1");
 		
-		tx2.unpin(blk);
+		tx2.unpin(blk); // T2 unlock
 		tx2.commit();
 	}
 }
